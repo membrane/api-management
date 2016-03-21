@@ -430,16 +430,30 @@ function readservicesonchange() {
             }
         },
         createuser: function (emailVar, passwordVar, surnameVar, firstnameVar) {
-            Accounts.createUser({
-                email: emailVar,
-                password: passwordVar,
-                profile: {
-                    surname: surnameVar,
-                    firstname: firstnameVar,
-                    status: "unapproved"
-                },
-                roles: []
-            });
+            if(Meteor.users.findOne()!=undefined)
+                Accounts.createUser({
+                    email: emailVar,
+                    password: passwordVar,
+                    profile: {
+                        surname: surnameVar,
+                        firstname: firstnameVar,
+                        status: "unapproved"
+                    }
+                });
+            else {
+                var id = Accounts.createUser({
+                    email: emailVar,
+                    password: passwordVar,
+                    profile: {
+                        surname: surnameVar,
+                        firstname: firstnameVar,
+                        status: "approved"
+                    }
+                });
+                Meteor.users.update({"_id":id}, {$set:{"roles": ["admin"] }})
+                if(groups.findOne()==undefined)groups.insert({_id:Random.id(), name:"admin"});
+            }
+
         },
         createnewuser: function (firstname, surname, email, password) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
