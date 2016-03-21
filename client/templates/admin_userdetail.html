@@ -1,0 +1,71 @@
+<template name="admin_userdetail">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <div class="alert alert-info">
+                    Hover over the fields to change them.
+                </div>
+                <table class="admin_userdetail table table-striped">
+                    <thead><tr>
+                        <th>Firstname</th>
+                        <th>Surname</th>
+                        <th>Email</th>
+                        <th>Roles</th>
+                        <th>Status</th>
+                        <th>Password</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>
+                            <div id="firstname">{{user.profile.firstname}}</div>
+                        </td>
+                        <td>
+                            <div id="surname">{{user.profile.surname}}</div>
+                        </td>
+                        <td>
+                            <div id="mail">{{user.emails.[0].address}}</div>
+                        </td>
+                        <td>
+                            <ul>
+                                {{#each user.roles}}
+                                    <li>{{this}} <a href="#" class="del btn" data-toggle="tooltip" title="Remove group"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li>
+                                {{/each}}
+
+                                {{#if groups}}
+                                <select id="group">
+                                    {{#each groups}}
+                                        <option value="{{this.name}}">{{this.name}}
+                                        </option>
+                                    {{/each}}
+                                </select>
+                                <input type="button" class="btn btn-primary" id="add" value="add" data-toggle="tooltip" title="Add group">
+                                {{/if}}
+                            </ul>
+                        </td>
+                        <td>
+                            <select id="options">
+                                <option value="approved" class="opt">approved</option>
+                                <option value="unapproved" class="opt">unapproved</option>
+                                <option value="rejected" class="opt">rejected</option>
+                                <option value="deactivated" class="opt">deactivated</option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="password" id="pw" placeholder="password" value="123456">
+                            <input class="btn btn-primary" type="button" id="password" value="change password">
+                            <div class="alert alert-success hidden">&gt; changes saved</div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

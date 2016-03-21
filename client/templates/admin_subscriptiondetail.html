@@ -1,0 +1,22 @@
+<template name="admin_subscriptiondetail">
+
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <pre>
+                    Policy: {{policy.name}}
+                    User:   {{user.emails.[0].address}}
+                    Key:    {{key}}
+                </pre>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+
+
+</template>

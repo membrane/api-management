@@ -1,0 +1,17 @@
+<template name="admin_useruebersicht">
+
+        {{#if currentUser}}
+            {{#if isInRole 'admin'}}
+                {{>adminnavbar}}
+            <div class="container">
+                {{>admin_user}}
+            </div>
+            {{else}}
+                {{>usernavbar}}
+                {{>userrestricted}}
+            {{/if}}
+        {{else}}
+            {{>usernotloggedin}}
+        {{/if}}
+
+</template>

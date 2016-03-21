@@ -1,0 +1,35 @@
+<template name="admin_subscriptionsuebersicht">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Subscriptions</h2>
+                <br>
+                <div class="alert alert-success hidden"></div>
+                <br>
+                <br>
+                <table class="table table-striped">
+                    <thead>
+                    <tr><th>Username</th><th>Policy</th><th>Key</th><th>Delete</th></tr>
+                    </thead>
+                    <tbody>
+                    {{#each subscription}}
+                       <tr>
+                           <td><a href="/user/{{this.user}}">{{this.username}}</a></td>
+                           <td><a href="/policy/{{this.policy}}">{{this.policyname}}</a></td>
+                           <td><a href="/subscription/{{this._id}}" class="btn btn-primary" data-toggle="tooltip" title="View key"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a></td>
+                           <td><a class="btn del btn-danger" id="{{this._id}}" data-toggle="tooltip" title="Delete subscription"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td>
+                       </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+                <a href="/subscription/new" class="btn btn-primary">new</a>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

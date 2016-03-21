@@ -1,0 +1,55 @@
+<template name="admin_subscriptionnew">
+
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+            <h2>New Subscription</h2>
+            <br>
+            <div class="alert alert-info" id="alertinfo">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float: left;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                &emsp;<strong>Info!</strong> Users can subscribe to policies themselfs using the developer portal. Here the admin can create Subscriptions for the users.
+            </div>
+            <br>
+            <br>
+            <table>
+            <tbody><tr>
+                <td>User:</td>
+                <td>
+                    <select id="user">
+                    {{#each user}}
+                        <option value="{{this._id}}">{{this.emails.[0].address}}</option>
+                    {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Policy:</td>
+                <td>
+                    <select id="policies">
+                        {{#each policy}}
+                            <option value="{{this._id}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Key:</td>
+                <td><input type="text" value="{{randomkey}}" id="key"></td>
+            </tr>
+            </tbody>
+            </table>
+            <a id="save" class="btn btn-primary">save</a><a id="reset" class="btn btn-warning">reset</a>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+
+
+</template>

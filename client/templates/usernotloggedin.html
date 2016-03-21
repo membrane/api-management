@@ -1,0 +1,46 @@
+<template name="usernotloggedin">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="container">
+            <ul class="nav navbar-nav">
+                <li></li>
+            </ul>
+        </div>
+    </nav>
+    <div id="loginbuttons" class="container">
+
+        <form novalidate="novalidate" action="signIn" id="signin-form_id" class="panel">
+            <div class="alert alert-warning hidden" style="text-align:center" id="loginhint">
+
+            </div>
+            <h4>Please log in:</h4>
+                <input name="username" id="username_id" class="form-control input-lg" placeholder="eMail" value="" type="text">
+
+                <input name="password" id="password_id" class="form-control input-lg" placeholder="password" type="password">
+
+
+                <input name="rememberMe" id="rememberMe" class="px" type="checkbox"> <span class="lbl">Remember me</span>
+                <input name="registerMe" id="registerMe" class="hidden" type="hidden" value="false">
+                <input value="login" class="btn btn-primary btn-block btn-lg" type="submit">
+                <a href="" id="reg">register</a>
+        </form>
+
+        <form novalidate="novalidate" action="register" id="register" class="panel hidden">
+            <div class="alert alert-warning hidden" style="text-align:center" id="registerhint">
+                Your registration is being processed, an admin will soon approve your account.
+            </div>
+            <div id="afterregister">
+                <h4>Please register:</h4>
+                <input name="username" id="username_id" class="form-control input-lg" placeholder="eMail" value="" type="text">
+                <input name="surname" id="surname_id" class="form-control input-lg" placeholder="surname" value="" type="text">
+                <input name="firstname" id="firstname_id" class="form-control input-lg" placeholder="firstname" value="" type="text">
+
+                <input name="password" id="password_id" class="form-control input-lg" placeholder="password" type="password">
+
+                <input name="registerMe" id="registerMe" class="hidden" type="hidden" value="true">
+                <input value="register" class="btn btn-primary btn-block btn-lg" type="submit">
+            </div>
+            <br><br>
+            <a href="" id="anm">login</a>
+        </form>
+    </div>
+</template>

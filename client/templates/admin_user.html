@@ -1,0 +1,35 @@
+<template name="admin_user">
+            <h2>User</h2>
+            <table class="admin_user table table-striped">
+                <thead>
+                <tr><th>User</th><th>Groups</th><th>Status</th><th>Delete</th></tr>
+                </thead>
+                <tbody>
+                {{#each user}}
+                    <tr>
+                        <td>
+                           <a href="/user/{{this._id}}"> {{this.profile.firstname}} {{this.profile.surname}}</a> &lt;&lt;<a href="mailto:{{this.emails.[0].address}}">{{this.emails.[0].address}}</a>&gt;&gt;</td>
+                        <td>
+                            <ul>
+                                {{#each this.roles}}
+                                    <li>{{this}}</li>
+                                {{/each}}
+                            </ul>
+                        </td>
+                        <td>
+                            {{this.profile.status}}
+                        </td>
+                        <td>
+                            <button class="delete btn btn-danger" value="{{this._id}}" data-toggle="tooltip" title="Delete user">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true">
+
+                                </span>
+                            </button>
+                        </td>
+                    </tr>
+                {{/each}}
+                <tr><td colspan="4">
+                    <h3>New User</h3><input type="text" name="firstname" placeholder="firstname"><input type="text" name="surname" placeholder="surname"><input type="email" name="email" placeholder="email"><input type="password" name="password" placeholder="password"><button id="createnewuser" class="btn btn-primary">create</button></td></tr>
+                </tbody>
+            </table>
+</template>

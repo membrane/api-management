@@ -1,0 +1,16 @@
+<template name="admin_exportpolicies">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Content of <a href="/export">output.yaml</a></h2>
+                <pre>{{policies}}</pre>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

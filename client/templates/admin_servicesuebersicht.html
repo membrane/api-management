@@ -1,0 +1,36 @@
+<template name="admin_servicesuebersicht">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Services</h2>
+                <br>
+                <div class="alert alert-success hidden"></div>
+                <br>
+                <br>
+                <table class="table table-striped">
+                    <thead><tr><th>id</th><th>Membrane</th></tr></thead>
+                <tbody>
+                {{#each services}}
+                    <tr>
+                        <td>
+                            {{this.name}}
+                        </td>
+                        <td>
+                            {{this.membrane}}
+                        </td>
+
+                    </tr>
+                {{/each}}
+                </tbody>
+                </table>
+                 <a class="btn btn-primary" id="refresh">Refresh</a>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

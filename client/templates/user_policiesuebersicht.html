@@ -1,0 +1,41 @@
+<template name="user_policiesuebersicht">
+
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+        {{else}}
+            {{>usernavbar}}
+            <div class="container">
+                <h1>Policies</h1>
+                <table class="table table-striped">
+                    <thead><tr><th>Name</th><th>RateLimit</th><th>Quota</th><th>Subscribed</th></tr></thead>
+                    <tbody>
+                    {{#each policies}}
+                        <tr>
+                            <td><a href="/policy/{{this._id}}">{{this.name}}</a></td>
+                            <td>
+                                {{#if this.rateLimit.bool}}
+                                    {{this.rateLimit.requests}} requests in {{this.rateLimit.interval_}}
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if this.quota.bool}}
+                                    {{this.quota.size}} in {{this.quota.interval_}}
+                                {{/if}}
+                            </td>
+                            <td>
+                                {{#if this.subscribed}}
+                                    <span class="glyphicon glyphicon-ok" aria-hidden="true" style="color:green"></span>
+                                {{/if}}
+                            </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+
+            </div>
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+
+</template>

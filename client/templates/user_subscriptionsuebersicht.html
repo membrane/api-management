@@ -1,0 +1,35 @@
+<template name="user_subscriptionsuebersicht">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+        {{else}}
+            {{>usernavbar}}
+            <div class="container">
+                <h1>Subscriptions</h1>
+                <table class="table table-striped usersubscriptionuebersichttable">
+                    <thead>
+                    <tr>
+                        <th>Policy</th>
+                        <th>Services</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                {{#each subscription}}
+                    <tr>
+                        <td><a href="/policy/{{this.policy}}">{{this.policyname}}</a></td>
+                        <td>
+                            <ul>
+                            {{#each this.services}}
+                                <li>{{this.name}}</li>
+                            {{/each}}
+                            </ul>
+                        </td>
+                    </tr>
+                {{/each}}
+                    </tbody>
+                </table>
+            </div>
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

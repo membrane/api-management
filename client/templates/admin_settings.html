@@ -1,0 +1,77 @@
+<template name="admin_settings">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Admin Settings</h2>
+                <div class="modal fade" id="succesmodal">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title">Changes Saved</h4>
+                            </div>
+
+                            <div class="modal-body">
+                                All changes were saved.
+                            </div>
+
+                            <div class="modal-footer">
+                                <input type="button" id="ok" value="OK" class="btn-primary">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <table class="table table-striped">
+                    <tbody>
+                    <tr>
+                        <td>Yaml-File</td><td><a href="/exportpolicies/" class="btn btn-lg" data-toggle="tooltip" title="View file"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a> <a href="/export/" data-toggle="tooltip" title="Download file" class="btn btn-lg"><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a></td>
+                    </tr>
+                    <tr>
+                        <td>ETCD URL:</td>
+                        <td> <input type="text" value="{{etcdurl.value}}" id="etcdurl"></td>
+                    </tr>
+                    <tr>
+                        <td>ECTD Private Key</td>
+                        <td> <textarea id="key" style="width:650px; height: 200px;">{{key.value}}</textarea></td>
+                    </tr>
+                    <tr>
+                        <td>ECTD Public Key (Certificate)</td>
+                        <td> <textarea id="cert" style="width:650px; height: 200px;">{{cert.value}}</textarea></td>
+                    </tr>
+                    <tr>
+                        <td>ECTD CA</td>
+                        <td> <textarea id="ca" style="width:650px; height: 200px;">{{ca.value}}</textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Membrane Username</td>
+                        <td> <input type="text" value="{{membraneusername.value}}" id="membraneusername"></td>
+                    </tr>
+                    <tr>
+                        <td>Membrane Password</td>
+                        <td> <input type="password" value="{{membranepassword.value}}" id="membranepassword" class="pw"></td>
+                    </tr>
+                    <tr>
+                        <td>/export Username</td>
+                        <td> <input type="text" value="{{exportusername.value}}" id="exportusername"></td>
+                    </tr>
+                    <tr>
+                        <td>/export Password</td>
+                        <td> <input type="password" value="{{exportpassword.value}}" id="exportpassword" class="pw"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <br>
+                <br>
+                <input type="button" value="show passwords" class="btn btn-primary shpw"> <input type="button" value="change" class="btn btn-primary change">
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

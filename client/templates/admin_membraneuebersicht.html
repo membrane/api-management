@@ -1,0 +1,35 @@
+<template name="admin_membraneuebersicht">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Membrane Installations</h2>
+                <br>
+                <div class="alert alert-info">
+                    The following Membrane installations are managed by this API.
+                </div>
+                <br>
+                <br>
+                <table class="table table-striped">
+                    <thead><tr><th>Id</th></tr></thead>
+                    <tbody>
+                    {{#each membranes}}
+                        <tr>
+                            <td>
+                                {{this.name}} ({{this.host}}:{{this.port}})
+                            </td>
+                        </tr>
+                    {{/each}}
+                    </tbody>
+                </table>
+                 <a class="btn btn-primary" id="refresh">Refresh</a>
+
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

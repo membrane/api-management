@@ -1,0 +1,158 @@
+<template name="admin_policiesdetail">
+        {{#if currentUser}}
+            {{#if isInRole 'admin'}}
+                {{>adminnavbar}}
+            <div class="container">
+                <br>
+                <div class="modal fade" id="succesmodal">
+                    <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h4 class="modal-title">Changes Saved</h4>
+                            </div>
+
+                            <div class="modal-body">
+                               All changes were saved.
+                            </div>
+
+                            <div class="modal-footer">
+                                <input type="button" id="ok" value="OK" class="btn-primary">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <br>
+                <table class="table table-striped admin_policiesdetailtable">
+                    <thead>
+                    <tr>
+                        <th colspan="2">Edit Policy</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <th>Name</th>
+                        <td><input type="text" placeholder="name" id="name" value="{{name}}" class="form-control"></td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td><textarea placeholder="description" id="description" class="form-control">{{description}}</textarea></td>
+                    </tr>
+                    <tr>
+                        <th>Services
+                            {{#if aviableservice}}
+                                <a href="#" class="btn btn-primary" id="addservices">Add services</a>
+                            {{/if}}
+                            <div class="modal fade" id="servicesmodal">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Add Services</h4>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <table border="0">
+                                                {{#each aviableservice}}
+                                                    <tr>
+                                                        <td><label for="name">{{this.name}} ({{this.membrane}})</label></td>
+                                                        <td><input type="checkbox" class="serviceoptions" value="{{this._id}}"/></td>
+                                                    </tr>
+                                                {{/each}}
+                                            </table>
+
+
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" id="addserv">Add</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div></th>
+                        <td>
+                            <table>
+                                {{#each service}}
+                                    <tr><td width="250px">{{this.name}} ({{this.membrane}})</td><td><button id="min" class="btn btn-danger" data-toggle="tooltip" title="Remove service"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                                {{/each}}
+                            </table>
+                        </td>
+
+
+                    </tr>
+                    <tr>
+                        <th>Groups
+                            {{#if aviablegroups}}
+                                <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
+                            {{/if}}
+                            <div class="modal fade" id="groupsmodal">
+                                <div class="modal-dialog modal-sm">
+                                    <div class="modal-content">
+
+                                        <div class="modal-header">
+                                            <h4 class="modal-title">Add groups</h4>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <table border="0">
+                                                {{#each aviablegroups}}
+                                                    <tr>
+                                                        <td><label for="name">{{this.name}}</label></td>
+                                                        <td><input type="checkbox" class="groupotions" value="{{this._id}}"/></td>
+                                                    </tr>
+                                                {{/each}}
+                                            </table>
+
+
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" id="addgrp">Add</button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </th>
+                        <td>
+                            <table>
+                                {{#each groups}}
+                                    <tr><td width="250px">{{this.name}} </td><td><button id="gmin" class="btn btn-danger" data-toggle="tooltip" title="Remove group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                                {{/each}}
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th>rateLimit</th>
+                        <td>
+                            <input type="number" name="rateLimitRequests" id="rateLimitRequests" placeholder="Requests" value="{{rateLimitRequests}}" class="form-control"> /  <input type="number" id="rateLimitInterval" name="rateLimitInterval" placeholder="Interval" value="{{rateLimitInterval}}" class="form-control">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Quota</th>
+                        <td>
+                            <input type="text" name="QuotaSize" id="QuotaSize" placeholder="Size (z.B. 1M)" value="{{QuotaSize}}" class="form-control"> /  <input type="number" id="QuotaInterval" name="QuotaInterval" placeholder="Interval" value="{{QuotaInterval}}" class="form-control">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"> <button id="save" class="btn btn-primary">save</button></td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            {{else}}
+                {{>usernavbar}}
+                {{>userrestricted}}
+            {{/if}}
+        {{else}}
+            {{>usernotloggedin}}
+        {{/if}}
+</template>

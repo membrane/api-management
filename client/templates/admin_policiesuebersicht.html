@@ -1,0 +1,44 @@
+<template name="admin_policiesuebersicht">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+        <div class="container">
+            <h2>Policies</h2>
+            <br>
+            <div class="alert alert-success hidden"></div>
+            <br>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Policy</th><th>RateLimit</th><th>Quota</th><th>Delete</th>
+                </tr>
+
+                </thead>
+                <tbody>
+                {{#each policy}}
+                    <tr>
+                        <td><a href="/policy/{{this._id}}" >{{this.name}}</a></td>
+                        <td>{{this.rateLimit.requests}} {{this.rateLimit.interval_}}</td>
+                        <td>{{this.quota.size}} {{this.quota.interval_}}</td>
+                        <td>
+                            <button class="delete btn btn-danger" data-toggle="tooltip" title="Delete policy" value="{{this._id}}">
+                                <span class="glyphicon glyphicon-trash" aria-hidden="true">
+
+                                </span>
+                            </button>
+                        </td>
+                    </tr>
+                {{/each}}
+                </tbody>
+            </table><br>
+            <a href="/policy/new" class="btn btn-primary">New Policy</a>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

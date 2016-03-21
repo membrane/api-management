@@ -1,0 +1,24 @@
+<template name="admin_gruppenuebersicht">
+        {{#if currentUser}}
+            {{#if isInRole 'admin'}}
+                {{>adminnavbar}}
+
+                <div class="container">
+                    <h2>Groups</h2>
+                    <table class="table table-striped"><tbody>{{#each groups}}
+                        <tr><td>{{this.name}}</td> <td><a href="" id="{{this.name}}" class="del btn btn-danger" data-toggle="tooltip" title="Delete group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></td></tr>
+                    {{/each}}
+                        </tbody>
+                    </table>
+                    <h3>New Group</h3>
+                    <div><input type="text" placeholder="new groupname"> <input type="button" id="add" value="create" class="btn btn-primary"></div>
+                </div>
+            {{else}}
+                {{>usernavbar}}
+                {{>userrestricted}}
+            {{/if}}
+        {{else}}
+            {{>usernotloggedin}}
+        {{/if}}
+
+</template>

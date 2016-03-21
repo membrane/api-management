@@ -1,0 +1,23 @@
+#login-dropdown-list {
+    position: absolute;
+    top: 20px;
+    left: 110px;
+}
+.accounts-dialog {
+    border: 1px solid #cccccc;
+    z-index: 1000;
+    background: white;
+    border-radius: 4px;
+    padding: 8px 12px;
+    margin: -8px -12px 0 -12px;
+    width: 250px;
+    box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 3px 0 rgba(0, 0, 0, 0.2);
+    font-size: 16px;
+    color: #333;
+}
+#login-buttons a, .accounts-dialog a {
+    cursor: pointer;
+    text-decoration: underline;
+}
+

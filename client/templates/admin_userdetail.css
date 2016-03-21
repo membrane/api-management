@@ -1,0 +1,17 @@
+.admin_userdetail td, th{
+    width: 160px;
+    padding: 10px;
+    vertical-align: top;
+}
+#firstname, #firstnamei{
+    width: 80px;
+    vertical-align: top;
+}
+#surname, #surnamei{
+    width: 80px;
+    vertical-align: top;
+}
+#mail, #maili{
+    width: 140px;
+    vertical-align: top;
+}

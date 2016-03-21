@@ -1,0 +1,29 @@
+{
+  "dependencies": {
+    "bootstrap": {
+      "version": "3.3.6"
+    },
+    "https": {
+      "version": "1.0.0"
+    },
+    "js-yaml": {
+      "version": "3.5.2",
+      "dependencies": {
+        "argparse": {
+          "version": "1.0.6",
+          "dependencies": {
+            "sprintf-js": {
+              "version": "1.0.3"
+            }
+          }
+        },
+        "esprima": {
+          "version": "2.7.2"
+        }
+      }
+    },
+    "lodash": {
+      "version": "4.0.1"
+    }
+  }
+}

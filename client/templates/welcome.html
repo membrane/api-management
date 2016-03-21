@@ -1,0 +1,18 @@
+<template name="welcome">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+               <h2>Admin</h2>
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            <div class="container">
+                <h2>User</h2>
+
+            </div>
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

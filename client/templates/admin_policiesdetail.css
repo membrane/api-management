@@ -1,0 +1,11 @@
+.admin_policiesdetailtable td, th{
+    vertical-align: top;
+}
+.admin_policiesdetailtable {
+    border: 1px;
+}
+#description{
+    width: 100%;
+    height: 100px;
+}
+

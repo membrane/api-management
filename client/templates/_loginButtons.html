@@ -1,0 +1,33 @@
+<template name="_loginButtons">
+    <a  id="login-name-link" class="login-link-text">
+        {{currentUser.emails.[0].address}} ▾
+    </a>
+    <div id="login-dropdown-list" class="accounts-dialog">
+        <a class="login-close-text">Schließen</a>
+        <div class="login-close-text-clear"></div>
+        <div class="login-button" id="login-buttons-open-change-password">
+            Passwort ändern
+        </div>
+        <div class="login-changepassword">
+                <div id="login-old-password-label-and-input">
+                    <label id="login-old-password-label" for="login-old-password">
+                        aktuelles Passwort
+                    </label>
+                    <input id="login-old-password" type="password">
+                </div>
+                <div id="login-password-label-and-input">
+                    <label id="login-password-label" for="login-password">
+                        neues Passwort
+                    </label>
+                    <input id="login-password" type="password">
+                </div>
+                <div class="login-button login-button-form-submit" id="login-buttons-do-change-password">
+                    Passwort ändern
+                </div>
+        </div>
+        <div id="password-changed">Ihr Passwort wurde geändert.</div>
+        <div class="login-button" id="login-buttons-logout">
+            ausloggen
+        </div>
+    </div>
+</template>
