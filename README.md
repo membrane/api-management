@@ -9,11 +9,11 @@ API Management for Membrane Service Proxy
 
 1. Install [Meteor](https://www.meteor.com/) on your local machine.
 2. Clone this project.
-´´´bash
+´´´
    git clone https://github.com/membrane/api-management.git
 ´´´
 3. Move terminal to folder and start project.
-´´´bash
+´´´
 cd api-managment/
 meteor
 ´´´
