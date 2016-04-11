@@ -4,6 +4,14 @@ Meteor.subscribe("UserAccounts");
 Template.user_subscriptionsuebersicht.helpers({
     subscription: function(){
         sub = subscriptions.find().fetch();
+        if(policies.findOne({name:"unauthorized"})!=undefined)
+                sub.push({
+                    "_id" : Random.id(),
+                    "policy" : policies.findOne({name:"unauthorized"})._id,
+                    "user" : Meteor.userId(),
+                    "key" : "none"
+                }
+            );
         rem= [];
         sub.forEach(function(entry){
             if(policies.findOne({_id:entry.policy})!=undefined) rem.push({

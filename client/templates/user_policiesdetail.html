@@ -29,6 +29,10 @@
                                         <td><a href="{{this.url}}">{{this.url}}</a></td>
                                         {{#if apikeybool}}
                                         <td><pre>curl -H "Authorization: {{apikey}}" {{this.url}}</pre></td>
+                                        {{else}}
+                                            {{#if unauthorized}}
+                                                <td><pre>curl  {{this.url}}</pre></td>
+                                            {{/if}}
                                         {{/if}}
                                     </tr>
                                 {{/each}}
@@ -41,10 +45,13 @@
                     {{/if}}
                     <br>
                     <div>
-                        {{#if apikeybool}}
-                            <button class="btn btn-primary" id="unsubscribe">unsubscribe</button>
+                        {{#if unauthorized}}
                         {{else}}
-                            <button class="btn btn-primary" id="subscribe">subscribe</button>
+                            {{#if apikeybool}}
+                                <button class="btn btn-primary" id="unsubscribe">unsubscribe</button>
+                            {{else}}
+                                <button class="btn btn-primary" id="subscribe">subscribe</button>
+                            {{/if}}
                         {{/if}}
                     </div>
 

@@ -2,23 +2,7 @@ Meteor.subscribe("policies");
 Meteor.subscribe("subscriptions");
 Meteor.subscribe("UserAccounts");
 
-function setCookie(cname, cvalue, exdays) {
-    var d = new Date();
-    d.setTime(d.getTime() + (exdays*24*60*60*1000));
-    var expires = "expires="+d.toUTCString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
-}
 
-function getCookie(cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for(var i=0; i<ca.length; i++) {
-        var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1);
-        if (c.indexOf(name) == 0) return c.substring(name.length,c.length);
-    }
-    return "";
-}
 
 Template.admin_subscriptionnew.rendered=function(){
     if(getCookie("infoalertsubscription")=="true") $('#alertinfo').hide(0);
@@ -30,7 +14,12 @@ Template.admin_subscriptionnew.rendered=function(){
 
 Template.admin_subscriptionnew.helpers({
     policy: function(){
-        return policies.find();
+        if(policies.findOne({name:"unauthorized"})!=undefined){
+            return policies.find({_id:{
+                $ne: policies.findOne({name:"unauthorized"})._id
+            }});
+        }
+        else return policies.find();
     },
     user: function(){
         return Meteor.users.find();

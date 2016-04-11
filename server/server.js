@@ -6,6 +6,9 @@ var basicAuth;
 function isInArray(value, array) {
     return array.indexOf(value) > -1;
 }
+/**
+ * @return {null}
+ */
 function URISplitter(toSplit, segment){
     if(toSplit!=null)
         return toSplit.split("/")[segment];
@@ -13,16 +16,15 @@ function URISplitter(toSplit, segment){
 }
 
 function call(kinde, method, path, options, callback){
-    if(kinde!= undefined && path !=undefined && method !=undefined, options!=undefined){
+    if(kinde!= undefined && path !=undefined && method !=undefined && options!=undefined){
         if(kinde==="HTTP"){
-            if(callback!=undefined) {
+            if(callback!=undefined) { //asynchronus http Request
                 HTTP.call(method, path, options, function (error, res) {
                     callback(error, res);
                 });
                 return undefined;
             }
-
-            else return HTTP.call(method, path, options);
+            else return HTTP.call(method, path, options); //synchronus http request
         } else if (kinde==="HTTPS"){
             var j = path.split("/");
             var arr = [];
@@ -44,7 +46,7 @@ function call(kinde, method, path, options, callback){
 
 
             if(options.params!=undefined){
-                post_data = "value="+options.params.value;
+                var post_data = "value="+options.params.value;
                 options.headers= {
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Content-Length': post_data.length
@@ -78,7 +80,7 @@ function call(kinde, method, path, options, callback){
                 }
                 req.end();
             } catch(e){
-                console.log(e);
+                console.log("ERR:83 ",e);
             }
             return undefined;
 
@@ -86,99 +88,194 @@ function call(kinde, method, path, options, callback){
     } else throw "please specify more parameter";
 }
 
+function settingsNOTundefinedANDNOTempty(type){
+    return settings.findOne({type: type}) != undefined && settings.findOne({type: type}).value != "";
+}
+
+function cmp(el1, el2){
+    if(el1==undefined && el2==undefined){
+        return cmp;
+    }
+    else if(el2==undefined){
+        return function(el){
+            return el1 === el;
+        }
+    }
+    else return el1===el2;
+}
+function buildurl(part1, part2, part3){
+    if(part1==undefined && part2==undefined && part3==undefined){
+        return buildurl;
+    } else if (part3==undefined && part2==undefined){
+        return function(part2, part3){
+            return part1+part2+part3;
+        }
+    } else if(part3==undefined){
+        return function(part3){
+            return part1+part2+part3;
+        }
+    } else
+        return part1+part2+part3;
+}
+function buildurlR(part1, part2, part3){
+    if(part1==undefined && part2==undefined && part3==undefined){
+        return buildurlR;
+    } else if (part3==undefined && part2==undefined){
+        return function(part2, part3){
+            return part3+part2+part1;
+        }
+    } else if(part3==undefined){
+        return function(part3){
+            return part3+part2+part1;
+        }
+    } else
+        return part3+part2+part1;
+}
+
+function editproperty(obj, property, value){
+    if(value==undefined && property==undefined && obj==undefined) {
+        return editproperty;
+    }
+    else if(value==undefined && property==undefined){
+        return function(_property, _value){
+            if(_value==undefined){
+                return function(__value){
+                    var newobj = obj;
+                    newobj[_property] = __value;
+                    return newobj;
+                }
+            }
+            else{
+                var newobj = obj;
+                newobj[_property] = _value;
+                return newobj;
+            }
+        }
+    }
+    else if(value==undefined){
+        return function(value){
+            var newobj = obj;
+            newobj[property] = value;
+            return newobj;
+        }
+    }
+    else {
+        var newobj = obj;
+        newobj[property] = value;
+        return newobj;
+    }
+
+}
+function httpsORhttp(){
+    var kind;
+    if (settingsNOTundefinedANDNOTempty("key") && settingsNOTundefinedANDNOTempty("cert")&& settingsNOTundefinedANDNOTempty("ca"))
+        kind = "HTTPS";
+    else
+        kind = "HTTP";
+    return kind;
+}
+function getresultsbykind(kind, results){
+    if(results==null) return null;
+    if (kind == "HTTPS") {
+        results  = JSON.parse(results);
+    } else {
+        results = JSON.parse(results.content);
+    }
+    return results;
+}
+
+
+
 function readservicesonchange() {
-    if (settings.findOne({type: "key"}) != undefined &&
-        settings.findOne({type: "cert"}) != undefined &&
-        settings.findOne({type: "ca"}) != undefined &&
-        settings.findOne({type: "key"}).value != "" &&
-        settings.findOne({type: "cert"}).value != "" &&
-        settings.findOne({type: "ca"}).value != "")
-        var kind = "HTTPS";
-    else var kind = "HTTP";
-    if (settings.findOne({type: "etcdurl"}) != undefined) {
-        call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?wait=true&recursive=true", {}, function (error, res) {
-            //?wait=true&recursive=true funktioniert nicht zusammen, deshalb geschachtelt.
-            //console.log(error, res);
-            call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?recursive=true", {}, function (err, results) {
-                if (err == undefined) {
-                    if (kind == "HTTPS") {
-                        var d = JSON.parse(results);
-                    } else {
-                        var d = JSON.parse(results.content);
-                    }
-                    var rer = [];
-                    if (d.node.dir === true && d.node.nodes != undefined) d.node.nodes.forEach(function (entry) {
-                        membrane = URISplitter(entry.key, 2);
-                        if (entry.dir === true && entry.nodes != undefined) entry.nodes.forEach(function (ent) {
-                            serviceProxy = URISplitter(ent.key, 3); //apiconfig
-                            if (serviceProxy === "endpoint" && ent.dir === true && ent.nodes != undefined) {
-                                var host = null, port = null;
-                                ent.nodes.forEach(function (en) {
+    var kind =httpsORhttp();
 
-                                    if (URISplitter(en.key, 4) === "host") {
-                                        if (en.value == "null") host = "localhost";
-                                        else host = en.value;
-                                    } else if (URISplitter(en.key, 4) === "port") {
-                                        port = en.value;
-                                    }
+    var rer = [];
+    var membrane;
 
-
-                                });
-
-                                if (URISplitter(host, 0) === "http:" || URISplitter(host, 0) === "https:")
-                                    host = URISplitter(host, 2);
-
-                                try {
-
-                                    if (settings.findOne({type: "membraneusername"}) != undefined && settings.findOne({type: "membraneusername"}).value != "") var re = call("HTTP", "GET", host + ":" + port + "/admin/rest/proxies?offset=0&max=1000", {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
-                                    else  var re = call("HTTP", "GET", "http://" + host + ":" + port + "/admin/rest/proxies?offset=0&max=1000", {});
-
-                                    re = JSON.parse(re.content);
-                                    if (re.proxies != undefined) {
-                                        re.proxies.forEach(function (en) {
-                                            if (en.path == null) en.path = "";
-                                            if (services.findOne({
-                                                    name: en.name,
-                                                    membrane: membrane,
-                                                    url: ("http://" + host + ":" + en.listenPort + en.path)
-                                                }) == undefined) {
-                                                services.insert({
-                                                    _id: en.name,
-                                                    name: en.name,
-                                                    membrane: membrane,
-                                                    url: ("http://" + host + ":" + en.listenPort + en.path)
-                                                });
-                                            }
-                                            rer.push(services.findOne({
-                                                name: en.name,
-                                                membrane: membrane,
-                                                url: ("http://" + host + ":" + en.listenPort + en.path)
-                                            })._id);
-                                        });
-                                    }
-                                } catch (e) {
-                                    console.log("ERROR", e);
-                                }
-
-                            }
-
-
-                        });
-                    });
-                    services.find().fetch().forEach(function (entry) {
-                        if (!isInArray(entry._id, rer)) Meteor.call("delservice", entry._id);
-                    });
-                } else console.log(err);
-            });
-            readservicesonchange();
+    function foreachendpoint(ent) {
+        var serviceProxy = URISplitter(ent.key, 3); //apiconfig
+        var host = null, port = null;
+        var comp;
+        ent.nodes = ent.nodes.filter(function (en) {
+            comp = cmp(URISplitter(en.key, 4));
+            return comp("host") || comp("port");
         });
+        ent.nodes.forEach(function (en) {
+            if (URISplitter(en.key, 4) === "host") {
+                host = (en.value == "null") ? "localhost" : en.value;
+            } else if (URISplitter(en.key, 4) === "port") {
+                port = en.value;
+            }
+        });
+
+        if (URISplitter(host, 0) === "http:" || URISplitter(host, 0) === "https:")
+            host = URISplitter(host, 2);
+
+        var uri = buildurlR("/admin/rest/proxies?offset=0&max=1000", host + ":" + port);
+        var re;
+        if (settingsNOTundefinedANDNOTempty("membraneusername"))
+            re = call("HTTP", "GET", uri(""), {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
+        else
+            re = call("HTTP", "GET", uri("http://"), {});
+
+        re = JSON.parse(re.content);
+        if (re.proxies != undefined) {
+            re.proxies.forEach(function (en) {
+                if (en.path == null) en.path = "";
+                var obj = {
+                    name: en.name,
+                    membrane: membrane,
+                    url: ("http://" + host + ":" + en.listenPort + en.path)
+                };
+                if (services.findOne(obj) == undefined) {
+                    services.insert(editproperty(obj, "_id", Random.id()));
+                }
+                rer.push(services.findOne(obj)._id);
+            });
+        }
+
+
+    }
+
+    function foreachdir (entry) {
+        membrane = URISplitter(entry.key, 2);
+        entry.nodes = entry.nodes.filter(function (ent) {
+            return URISplitter(ent.key, 3) === "endpoint" && ent.dir === true && ent.nodes != undefined;
+        });
+        entry.nodes.forEach(foreachendpoint);
+    }
+
+    function parsereults(err, results) {
+        var d = getresultsbykind(kind, results);
+        if (err == undefined && d.node.dir === true && d.node.nodes != undefined) {
+            rer = [];
+            d.node.nodes = d.node.nodes.filter(function (entry) {
+                return entry.dir === true && entry.nodes != undefined
+            });
+            d.node.nodes.forEach(foreachdir);
+            services.find().fetch().forEach(function (entry) {
+                if (!isInArray(entry._id, rer)) Meteor.call("delservice", entry._id);
+            });
+        } else console.log("ERR:259 ",err);
+    }
+
+    function readsuccessfull(error, res){
+        //?wait=true&recursive=true funktioniert nicht zusammen, deshalb geschachtelt.
+        //console.log(error, res);
+        call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?recursive=true", {}, parsereults);
+        readservicesonchange();
+
+    }
+
+    if (settings.findOne({type: "etcdurl"}) != undefined) {
+        call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?wait=true&recursive=true", {}, readsuccessfull);
     }
 }
 
 
     Meteor.startup(function () {
         if (settings.findOne({type: "exportusername"}) != undefined && settings.findOne({type: "exportpassword"}) != undefined) basicAuth = new HttpBasicAuth(settings.findOne({type: "exportusername"}).value, settings.findOne({type: "exportpassword"}).value);
-        if (settings.findOne({type: "exportusername"}) != undefined && settings.findOne({type: "exportusername"}).value != "")basicAuth.protect(["/export"]);
+        if (settingsNOTundefinedANDNOTempty("exportusername"))basicAuth.protect(["/export"]);
 
         policies.find().observe({
             changed: function (res) {
@@ -230,60 +327,26 @@ function readservicesonchange() {
         },
         changed: function () {
 
-            if (settings.findOne({type: "key"}) != undefined &&
-                settings.findOne({type: "cert"}) != undefined &&
-                settings.findOne({type: "ca"}) != undefined &&
-                settings.findOne({type: "key"}).value != "" &&
-                settings.findOne({type: "cert"}).value != "" &&
-                settings.findOne({type: "ca"}).value != "")
-                var kind = "HTTPS";
-            else var kind = "HTTP";
-            pol = policies.find().fetch();
-            ret = {policies: [], keys: []};
-            pol.forEach(function (entry) {
-                rez = [];
-                entry.services.forEach(function (ent) {
-                    if (ent != undefined)rez.push(ent.name.toString());
-                });
-                if (entry != undefined)ret.policies.push({
-                    policy: {
-                        id: entry.name,
-                        rateLimit: entry.rateLimit,
-                        quota: entry.quota,
-                        serviceProxy: rez
-                    }
-                })
-            });
-            sub = subscriptions.find().fetch();
-            sub.forEach(function (entry) {
-                rez = [];
-                if (policies.findOne({_id: entry.policy}) != undefined) rez.push(policies.findOne({_id: entry.policy}).name);
-                ret.keys.push({key: entry.key, policies: rez})
-            });
-
+            var kind =httpsORhttp();
+            var ret = createYAMLobject();
             call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?recursive=true", {}, function (err, results) {
                 if (err == undefined) {
-                    if (kind == "HTTPS") {
-                        var d = JSON.parse(results);
-                    } else {
-                        var d = JSON.parse(results.content);
-                    }
+                    var d=getresultsbykind(kind,results);
                     //console.log(d);
-                    var rer = [];
                     if (d.node.dir === true && d.node.nodes != undefined) d.node.nodes.forEach(function (entry) {
                         var url = URISplitter(entry.key, 2);
-                        var key = settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane/" + url + "/apiconfig/url";
+                        var key = settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane/" + url;
+
                         //console.log(key);
-                        call(kind, 'PUT', key, {params: {value: "http://localhost:3000/export"}},
+                        call(kind, 'PUT', buildurl(key, "/apiconfig/url", ""), {params: {value: "http://localhost:3000/export"}},
                             function (error, result) {
                                 if (!!error) {
                                     console.log(error);
                                 }
                             });
 
-                        key = settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane/" + url + "/apiconfig/fingerprint";
-                        //console.log(key);
-                        call(kind, 'PUT', key, {params: {value: SHA256(YAML.safeDump(ret))}},
+                        //console.log(buildurl(key, "/apiconfig/fingerprint", ""));
+                        call(kind, 'PUT', buildurl(key, "/apiconfig/fingerprint", ""), {params: {value: SHA256(YAML.safeDump(ret))}},
                             function (error, result) {
                                 if (!!error) {
                                     console.log(error);
@@ -291,7 +354,7 @@ function readservicesonchange() {
                             });
 
                     });
-                }
+                } else console.log("ERR:357 ",err);
             });
 
 
@@ -307,102 +370,90 @@ function readservicesonchange() {
             }
         },
         readservices: function () {
-            if (settings.findOne({type: "key"}) != undefined &&
-                settings.findOne({type: "cert"}) != undefined &&
-                settings.findOne({type: "ca"}) != undefined &&
-                settings.findOne({type: "key"}).value != "" &&
-                settings.findOne({type: "cert"}).value != "" &&
-                settings.findOne({type: "ca"}).value != "")
-                var kind = "HTTPS";
-            else var kind = "HTTP";
+            var kind = httpsORhttp();
+            var rer = [];
+            var rez = [];
+            var membrane;
+            function foreachserviceproxy(ent) {
+                var serviceProxy = URISplitter(ent.key, 3); //apiconfig
+
+
+                var host = null, port = null;
+
+                ent.nodes.forEach(function (en) {
+
+                    if (URISplitter(en.key, 4) === "host") {
+                        if (en.value == "null") host = "http://localhost";
+                        else host = en.value;
+                    } else if (URISplitter(en.key, 4) === "port") {
+                        port = en.value;
+                    }
+
+
+                });
+
+                if (URISplitter(host, 0) === "http:" || URISplitter(host, 0) === "https:")
+                    host = URISplitter(host, 2);
+
+
+                try {
+                    var url= buildurlR(port + "/admin/rest/proxies?offset=0&max=1000",host + ":")
+                    if (settingsNOTundefinedANDNOTempty("membraneusername")) var re = call("HTTP", "GET",  url("") , {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
+                    else  var re = call("HTTP", "GET", url("http://"), {});
+
+                    re = JSON.parse(re.content);
+                    var membraneobj = {
+                        name: membrane,
+                        host: host,
+                        port: port
+                    };
+                    if (membranes.findOne(membraneobj) == undefined) {
+                        membranes.insert(editproperty(membraneobj, "_id", Random.id()));
+                    }
+                    var mem = membranes.findOne(membraneobj);
+                    rez.push(mem._id);
+
+                    if (re.proxies != undefined) {
+                        re.proxies.forEach(function (en) {
+                            if (en.path == null) en.path = "";
+                            var serviceobj = {
+                                name: en.name,
+                                membrane: membrane,
+                                url: ("http://" + host + ":" + en.listenPort + en.path)
+                            };
+                            if (services.findOne(serviceobj) == undefined) {
+                                services.insert(editproperty(serviceobj, "_id", Random.id())); //Random.id()
+                            }
+                            rer.push(services.findOne(serviceobj)._id);
+                        });
+                    }
+                } catch (e) {
+                    console.log("ERR:431 ", e);
+                }
+            }
+
+            function foreachmembrane(entry) {
+                membrane = URISplitter(entry.key, 2);
+                var serviceProxy;
+                entry.nodes = entry.nodes.filter(function (ent) {
+                    serviceProxy = URISplitter(ent.key, 3);
+                    return serviceProxy === "endpoint" && ent.dir === true && ent.nodes != undefined;
+                });
+                entry.nodes.forEach(foreachserviceproxy);
+            }
             if (settings.findOne({type: "etcdurl"}) != undefined)
                 call(kind, "GET", settings.findOne({type: "etcdurl"}).value + "/v2/keys/membrane?recursive=true", {}, function (err, results) {
                     if (err == undefined) {
-                        if (kind === "HTTPS") var d = JSON.parse(results);
-                        else var d = JSON.parse(results.content);
-                        var rer = [];
-                        var rez = [];
-                        if (d.node.dir === true && d.node.nodes != undefined) d.node.nodes.forEach(function (entry) {
-                            membrane = URISplitter(entry.key, 2);
-
-                            if (entry.dir === true && entry.nodes != undefined) entry.nodes.forEach(function (ent) {
-                                serviceProxy = URISplitter(ent.key, 3); //apiconfig
-
-                                if (serviceProxy === "endpoint" && ent.dir === true && ent.nodes != undefined) {
-                                    var host = null, port = null;
-
-                                    ent.nodes.forEach(function (en) {
-
-                                        if (URISplitter(en.key, 4) === "host") {
-                                            if (en.value == "null") host = "http://localhost";
-                                            else host = en.value;
-                                        } else if (URISplitter(en.key, 4) === "port") {
-                                            port = en.value;
-                                        }
+                        var d = getresultsbykind(kind, results);
 
 
-                                    });
-
-                                    if (URISplitter(host, 0) === "http:" || URISplitter(host, 0) === "https:")
-                                        host = URISplitter(host, 2);
-
-
-                                    try {
-
-                                        if (settings.findOne({type: "membraneusername"}) != undefined && settings.findOne({type: "membraneusername"}).value != "") var re = call("HTTP", "GET", host + ":" + port + "/admin/rest/proxies?offset=0&max=1000", {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
-                                        else  var re = call("HTTP", "GET", "http://" + host + ":" + port + "/admin/rest/proxies?offset=0&max=1000", {});
-
-                                        re = JSON.parse(re.content);
-                                        if (membranes.findOne({
-                                                name: membrane,
-                                                host: host,
-                                                port: port
-                                            }) == undefined) {
-                                            membranes.insert({
-                                                _id: Random.id(),
-                                                name: membrane,
-                                                host: host,
-                                                port: port
-                                            });
-                                        }
-                                        mem = membranes.findOne({
-                                            name: membrane,
-                                            host: host,
-                                            port: port
-                                        });
-                                        rez.push(mem._id);
-
-                                        if (re.proxies != undefined) {
-                                            re.proxies.forEach(function (en) {
-                                                if (en.path == null) en.path = "";
-                                                if (services.findOne({
-                                                        name: en.name,
-                                                        membrane: membrane,
-                                                        url: ("http://" + host + ":" + en.listenPort + en.path)
-                                                    }) == undefined) {
-                                                    services.insert({
-                                                        _id: en.name,
-                                                        name: en.name,
-                                                        membrane: membrane,
-                                                        url: ("http://" + host + ":" + en.listenPort + en.path)
-                                                    });
-                                                }
-                                                rer.push(services.findOne({
-                                                    name: en.name,
-                                                    membrane: membrane,
-                                                    url: ("http://" + host + ":" + en.listenPort + en.path)
-                                                })._id);
-                                            });
-                                        }
-                                    } catch (e) {
-                                        console.log("Error: dsd", e);
-                                    }
-
-                                }
-
-
+                        if (d.node.dir === true && d.node.nodes != undefined) {
+                            d.node.nodes = d.node.nodes.filter(function (entry) {
+                                return entry.dir === true && entry.nodes != undefined;
                             });
-                        });
+                            d.node.nodes.forEach(foreachmembrane);
+                        }
+
                         //console.log(rez);
                         membranes.find().fetch().forEach(function (entry) {
                             if (!isInArray(entry._id, rez)) Meteor.call("delmembrane", entry._id);
@@ -410,7 +461,7 @@ function readservicesonchange() {
                         services.find().fetch().forEach(function (entry) {
                             if (!isInArray(entry._id, rer)) Meteor.call("delservice", entry._id);
                         });
-                    } else console.log(err);
+                    } else console.log("ERR:464 ",err);
                 });
 
         },
@@ -450,7 +501,7 @@ function readservicesonchange() {
                         status: "approved"
                     }
                 });
-                Meteor.users.update({"_id":id}, {$set:{"roles": ["admin"] }})
+                Meteor.users.update({"_id":id}, {$set:{"roles": ["admin"] }});
                 if(groups.findOne()==undefined)groups.insert({_id:Random.id(), name:"admin"});
             }
 
@@ -507,13 +558,13 @@ function readservicesonchange() {
         dellgroup: function (group) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
                 groups.remove({name: group});
-                user = Meteor.users.find().fetch();
+                var user = Meteor.users.find().fetch();
                 user.forEach(function (entry) {
                     Meteor.users.update({_id: entry._id}, {$pull: {roles: group}});
                 });
 
 
-                obj = null;
+                var obj = null;
                 policies.find().fetch().forEach(function (entry) {
                     entry.groups.forEach(function (ent) {
                         if (ent.name === group) obj = ent;
@@ -547,8 +598,8 @@ function readservicesonchange() {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
 
                 services.remove({_id: serviceid});
-                pol = policies.find().fetch();
-                obj = null;
+                var pol = policies.find().fetch();
+                var obj = null;
                 pol.forEach(function (entry) {
                     entry.services.forEach(function (ent) {
                         if (ent._id === serviceid) obj = ent;
@@ -588,7 +639,7 @@ function readservicesonchange() {
         },
         insertsubscription: function (userid, policy, key) {
             if (this.userId === userid) {
-                id = [];
+                var id = [];
                 policies.find().fetch().forEach(function (entry) {
                     entry.groups.forEach(function (ent) {
                         if (isInArray(ent.name, Roles.getRolesForUser(userid))) {
@@ -653,15 +704,15 @@ function readservicesonchange() {
         //}
         //,
         delsubscription: function (subscriptionid) {
-            sub = subscriptions.findOne({_id: subscriptionid});
+            var sub = subscriptions.findOne({_id: subscriptionid});
 
             if (sub == undefined)
                 return;
 
             if (this.userId === sub.user) {
-                policy = sub.policy;
-                id = [];
-                userid = this.userId;
+                var policy = sub.policy;
+                var id = [];
+                var userid = this.userId;
                 policies.find().fetch().forEach(function (entry) {
                     entry.groups.forEach(function (ent) {
                         if (isInArray(ent.name, Roles.getRolesForUser(userid))) {
@@ -717,8 +768,7 @@ function readservicesonchange() {
         if (user == undefined) return false;
 
         if (user.profile != undefined) {
-            if (user.profile.status != "approved") return false;
-            else return true;
+            return user.profile.status == "approved";
         }
         else return false;
 
@@ -727,22 +777,13 @@ function readservicesonchange() {
 
     membranes.allow({
         update: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         insert: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         remove: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return  (Roles.userIsInRole(userId, ['admin']));
         }
     });
     Meteor.publish('membranes', function () {
@@ -752,22 +793,13 @@ function readservicesonchange() {
 
     settings.allow({
         update: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         insert: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         remove: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         }
     });
     Meteor.publish('settings', function () {
@@ -777,29 +809,20 @@ function readservicesonchange() {
 
     policies.allow({
         update: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         insert: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         remove: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         }
     });
     Meteor.publish('policies', function () {
         if (Roles.userIsInRole(this.userId, ['admin'])) return policies.find();
         else {
-            userid = this.userId;
-            id = [];
+            var userid = this.userId;
+            var id = [];
             policies.find().fetch().forEach(function (entry) {
                 entry.groups.forEach(function (ent) {
                     if (isInArray(ent.name, Roles.getRolesForUser(userid))) {
@@ -813,30 +836,21 @@ function readservicesonchange() {
 
     services.allow({
         update: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         insert: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         remove: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         }
     });
     Meteor.publish('services', function (name) {
         if (Roles.userIsInRole(this.userId, ['admin']))return services.find();
         else {
             //console.log(Roles.getRolesForUser( this.userId ));
-            id = [];
-            userid = this.userId;
+            var id = [];
+            var userid = this.userId;
             policies.find().fetch().forEach(function (entry) {
                 entry.groups.forEach(function (ent) {
                     if (isInArray(ent.name, Roles.getRolesForUser(userid))) {
@@ -844,8 +858,8 @@ function readservicesonchange() {
                     }
                 });
             });
-            pol = policies.find({_id: {$in: id}}).fetch();
-            id = [];
+            var pol = policies.find({_id: {$in: id}}).fetch();
+            var id = [];
             pol.forEach(function (entry) {
                 entry.services.forEach(function (ent) {
                     id.push(ent._id);
@@ -856,22 +870,13 @@ function readservicesonchange() {
     });
     subscriptions.allow({
         update: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         insert: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         },
         remove: function (userId, doc, fields, modifier) {
-            if (Roles.userIsInRole(userId, ['admin']))
-                return true;
-            else
-                return false;
+            return (Roles.userIsInRole(userId, ['admin']));
         }
     });
     Meteor.publish('subscriptions', function () {

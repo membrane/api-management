@@ -34,12 +34,7 @@ Template.admin_subscriptionsuebersicht.events({
 
 
 
-function querystring(key) {
-    var re=new RegExp('(?:\\?|&)'+key+'=(.*?)(?=&|$)','gi');
-    var r=[], m;
-    while ((m=re.exec(document.location.search)) != null) r[r.length]=m[1];
-    return r;
-}
+
 Template.admin_subscriptionsuebersicht.rendered = function(){
     if(querystring("message")[0]!=undefined){
         area = $(".alert-success");
