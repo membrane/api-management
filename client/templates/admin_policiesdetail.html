@@ -78,7 +78,7 @@
                         <td>
                             <table>
                                 {{#each service}}
-                                    <tr><td width="250px">{{this.name}} ({{this.membrane}})</td><td><button id="min" class="btn btn-danger" data-toggle="tooltip" title="Remove service"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                                    <tr><td width="250px">{{this.name}} ({{this.membrane}})</td><td><button value="{{this._id}}"  class="btn btn-danger min" data-toggle="tooltip" title="Remove service"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
                                 {{/each}}
                             </table>
                         </td>
@@ -124,7 +124,7 @@
                         <td>
                             <table>
                                 {{#each groups}}
-                                    <tr><td width="250px">{{this.name}} </td><td><button id="gmin" class="btn btn-danger" data-toggle="tooltip" title="Remove group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
+                                    <tr><td width="250px">{{this.name}} </td><td><button value="{{this._id}}" class="btn btn-danger gmin" data-toggle="tooltip" title="Remove group"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></button></td></tr>
                                 {{/each}}
                             </table>
                         </td>

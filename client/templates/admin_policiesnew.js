@@ -33,10 +33,12 @@ Template.admin_policiesnew.events({
         tmp.update({name:event.target.parentNode.parentNode.childNodes[0].childNodes[0].nodeValue},{$set:{type:"group"}});
     },
     'click #gmin': function(event) {
-        tmp.update({name:event.target.parentNode.parentNode.childNodes[0].childNodes[0].nodeValue},{$set:{type:"agroup"}});
+        if(event.target.value!=undefined) tmp.update({_id:event.target.value},{$set:{type:"agroup"}});
+        else tmp.update({_id:event.target.parentElement.value},{$set:{type:"agroup"}});
     },
     'click #min': function(event) {
-       tmp.update({name:event.target.parentNode.parentNode.childNodes[0].childNodes[0].nodeValue},{$set:{type:"aservice"}});
+        if(event.target.value!=undefined) tmp.update({_id:event.target.value},{$set:{type:"aservice"}});
+        else tmp.update({_id:event.target.parentElement.value},{$set:{type:"aservice"}});
     },
     'click #save': function() {
        rem = [];
