@@ -315,11 +315,11 @@ function readservicesonchange() {
                 }
                 else
                     settings.insert({_id: Random.id(), type: type, value: value});
-                if (type === "exportusername") {
+                if (type === "exportusername" && settings.findOne({type: "exportusername"}) != undefined && settings.findOne({type: "exportpassword"}) != undefined) {
                     basicAuth = new HttpBasicAuth(settings.findOne({type: "exportusername"}).value, settings.findOne({type: "exportpassword"}).value);
                     if (settings.findOne({type: "exportusername"}).value != "")basicAuth.protect(["/export"]);
                     else basicAuth = null;
-                    console.log(basicAuth);
+
                 }
 
             }
