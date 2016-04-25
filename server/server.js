@@ -895,13 +895,8 @@ function readservicesonchange() {
 
     Meteor.publish('UserAccounts', function () {
 
-        if (!this.userId) return Meteor.users.find({ "emails.address" : 'admin@example.com' }, {
-            fields: {
-                emails: 1,
-                services: 1
-            }
-        });
-        else if (Roles.userIsInRole(this.userId, ['admin'])) {
+
+        if (Roles.userIsInRole(this.userId, ['admin'])) {
             return Meteor.users.find({}, {
                 fields: {
                     emails: 1,
@@ -910,7 +905,7 @@ function readservicesonchange() {
                 }
             });
         }
-        else {
+        else if(this.userId){
             return Meteor.users.find(this.userId, {
                 fields: {
                     emails: 1,
@@ -918,5 +913,9 @@ function readservicesonchange() {
                     roles: 1
                 }
             });
-        }
+        } else return Meteor.users.find({ "emails.address" : 'admin@example.com' }, {
+            fields: {
+                emails: 1
+            }
+        });
     });

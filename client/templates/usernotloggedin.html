@@ -9,8 +9,11 @@
     <div id="loginbuttons" class="container">
 
         <form novalidate="novalidate" action="signIn" id="signin-form_id" class="panel">
-            <div class="alert alert-success hidden" id="firstlogin">
-            </div>
+            {{#if firstlogin}}
+                <div class="alert alert-success" id="firstlogin">
+                The default login is admin@example.com / admin please make sure you change it before productive use.
+                </div>
+            {{/if}}
             <div class="alert alert-warning hidden" style="text-align:center" id="loginhint">
 
             </div>
