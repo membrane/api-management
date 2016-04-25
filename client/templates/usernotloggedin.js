@@ -2,6 +2,15 @@
  * Created by oerder on 07.12.15.
  */
 Meteor.subscribe("UserAccounts");
+
+Template.usernotloggedin.rendered= function(){
+    console.log(Meteor.users.findOne({ "emails.address" : 'admin@example.com' }));
+    if(Meteor.users.findOne({ "emails.address" : 'admin@example.com' })!= undefined){
+        $('#firstlogin').removeClass("hidden");
+        $('#firstlogin')[0].innerHTML="The default login is admin@example.com / admin please make sure you change it before productive use.";
+    }
+
+};
 Template.usernotloggedin.events({
     'submit form': function(event) {
         event.preventDefault();

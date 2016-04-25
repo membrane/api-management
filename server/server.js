@@ -304,6 +304,7 @@ function readservicesonchange() {
 
         Meteor.call("readservices");
         readservicesonchange();
+        fixtures();
     });
 
     Meteor.methods({
@@ -804,7 +805,7 @@ function readservicesonchange() {
     });
     Meteor.publish('settings', function () {
         if (Roles.userIsInRole(this.userId, ['admin'])) return settings.find();
-        else return null;
+        else return null;//settings.find({type:"fixtures"});
     });
 
     policies.allow({
@@ -894,7 +895,12 @@ function readservicesonchange() {
 
     Meteor.publish('UserAccounts', function () {
 
-        if (!this.userId) return null;
+        if (!this.userId) return Meteor.users.find({ "emails.address" : 'admin@example.com' }, {
+            fields: {
+                emails: 1,
+                services: 1
+            }
+        });
         else if (Roles.userIsInRole(this.userId, ['admin'])) {
             return Meteor.users.find({}, {
                 fields: {
