@@ -744,7 +744,9 @@ function readservicesonchange() {
         },
         //,
         userstatus: function (id) {
-            return Meteor.users.findOne({_id: id}).profile.status;
+            if(Meteor.users.findOne({_id: id})!=undefined)
+                return Meteor.users.findOne({_id: id}).profile.status;
+            else return undefined;
         },
         getyamldata: function (obj) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {

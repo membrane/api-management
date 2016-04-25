@@ -1,5 +1,8 @@
 #!/bin/sh
 main(){
+	echo "================================================
+This script installs API-Management, etcd and Membrane Service Proxy.
+================================================"
 	if [ ! -d "membrane-api-mgr" ]; then
 		mkdir membrane-api-mgr
 	fi
@@ -31,11 +34,17 @@ main(){
 
 	echo '
 	#/bin/sh
+	echo "======================================================================================
+First startup might take a while because the meteor application needs to be initalised
+======================================================================================"
 	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 	pids=()
 	$DIR/etcd & pids+=($!); $DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & pids+=($!); cd $DIR/../api-management ; meteor & pids+=($!)
 	sleep 60
-	read -p "$Q Type q to quit all subprocesses and this one, Q to end this process:" Q
+	read -p "====================================================================
+Type q to quit all subprocesses and this one, Q to end this process:
+====================================================================
+" Q
 	while true;
 	do
 		case $Q in
@@ -51,7 +60,9 @@ main(){
 	sleep 5
 	echo "bye." ' >./bin/start.sh
 	chmod +x ./bin/start.sh
-	echo "start api-mangement by running ./bin/start.sh"
-	echo "bye."
+	echo "
+start api-mangement by running ./membrane-api-mgr/bin/start.sh
+
+bye."
 }
 main "$@"
