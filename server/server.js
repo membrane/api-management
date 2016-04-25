@@ -709,8 +709,9 @@ function readservicesonchange() {
 
             if (sub == undefined)
                 return;
-
-            if (this.userId === sub.user) {
+            if (Roles.userIsInRole(this.userId, ['admin'])) {
+                subscriptions.remove({_id: subscriptionid});
+            } else if (this.userId === sub.user) {
                 var policy = sub.policy;
                 var id = [];
                 var userid = this.userId;
@@ -736,8 +737,6 @@ function readservicesonchange() {
                         }).fetch().length > 0)
                         subscriptions.remove({_id: subscriptionid});
                 }
-            } else if (Roles.userIsInRole(this.userId, ['admin'])) {
-                subscriptions.remove({_id: subscriptionid});
             }
 
 

@@ -3,7 +3,7 @@
  */
 Meteor.subscribe("subscriptions");
 Meteor.subscribe("UserAccounts");
-Meteor.subscribe("policies")
+Meteor.subscribe("policies");
 
 
 

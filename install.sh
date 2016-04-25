@@ -60,9 +60,10 @@ Type q to quit all subprocesses and this one, Q to end this process:
 	sleep 5
 	echo "bye." ' >./bin/start.sh
 	chmod +x ./bin/start.sh
-	echo "
-start api-mangement by running ./membrane-api-mgr/bin/start.sh
+	echo "===============================================================
+start api-management by running ./membrane-api-mgr/bin/start.sh
 
-bye."
+bye.
+==============================================================="
 }
 main "$@"

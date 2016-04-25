@@ -31,6 +31,7 @@ Template.admin_subscriptionnew.helpers({
 
 Template.admin_subscriptionnew.events({
     'click #save': function() {
+
         subscriptions.insert({
             "_id": Random.id(),
             "policy": $("#policies").val(),

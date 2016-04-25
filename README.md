@@ -17,4 +17,3 @@ Execute:
 (The first startup might take a while, because the Meteor application needs to download some packages.)
 Now go to [http://localhost:3000/](http://localhost:3000/) and login as admin@example.com / admin .
 
-
