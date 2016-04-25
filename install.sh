@@ -17,12 +17,8 @@ main(){
 	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
 	unzip membrane-service-proxy-4.2.1.zip
 	rm membrane-service-proxy-4.2.1.zip
-	read -p "Meteor is needed to run api-managment, but it is installed globally.
-Install Meteor? [Y|n]" installP
-	case $installP in
-			[Nn]* ) ;;
-		* ) curl https://install.meteor.com/ | sh;;
-	esac
+	
+	command -v meteor >/dev/null 2>&1 || { echo >&2 curl https://install.meteor.com/ | sh; }
 	curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
 	tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
 	cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
@@ -31,43 +27,7 @@ Install Meteor? [Y|n]" installP
 	command -v git >/dev/null 2>&1 || { echo >&2 "git is required but it's not installed.  Aborting."; exit 1; }
 	git clone https://github.com/membrane/api-management.git
 
-	echo '<spring:beans xmlns="http://membrane-soa.org/proxies/1/"
-				  xmlns:spring="http://www.springframework.org/schema/beans"
-				  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-				  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-							http://membrane-soa.org/proxies/1/ http://membrane-soa.org/schemas/proxies-1.xsd">
-
-		<spring:bean id="amc" class="com.predic8.membrane.core.interceptor.apimanagement.ApiManagementConfiguration" >
-			<spring:property name="location" value="distribution/conf/api.yaml"/>
-		</spring:bean>
-
-
-		<etcdRegistryApiConfig url="http://localhost:4001"/>
-		<router>
-			<transport>
-				<ruleMatching />
-				<exchangeStore />
-				<dispatching />
-				<apiManagement>
-					<amRateLimiter/>
-				</apiManagement>
-				<reverseProxying />
-				<userFeature />
-				<httpClient />
-			</transport>
-
-			<serviceProxy port="8081" name="junit API">
-				<target host="www.thomas-bayer.com" port="80"/>
-			</serviceProxy>
-
-			<serviceProxy port="9001" name="AdminConsole">
-				<adminConsole/>
-			</serviceProxy>
-
-
-		</router>
-
-	</spring:beans>' > './conf/proxies.xml' 
+	cp ./api-management/conf/proxies.xml ./conf/proxies.xml
 
 	echo '
 	#/bin/sh
