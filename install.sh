@@ -14,35 +14,22 @@ main(){
 	command -v curl >/dev/null 2>&1 || { echo >&2 "curl is required but it's not installed.  Aborting."; exit 1; }
 	command -v unzip >/dev/null 2>&1 || { echo >&2 "unzip is required but it's not installed.  Aborting."; exit 1; }
 	command -v tar >/dev/null 2>&1 || { echo >&2 "tar is required but it's not installed.  Aborting."; exit 1; }
-	if [ "$1" = "YES" ]
-	then
-		curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
-		unzip membrane-service-proxy-4.2.1.zip
-		curl https://install.meteor.com/ | sh
-		curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
-		tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
-		rm etcd-v2.3.1-linux-amd64.tar.gz
-		rm -r ./etcd-v2.3.1-linux-amd64
-		cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
-		git clone https://github.com/membrane/api-management.git
-	else
-		curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
-		unzip membrane-service-proxy-4.2.1.zip
-		rm membrane-service-proxy-4.2.1.zip
-		read -p "Meteor is needed to run api-managment, but it is installed globally.
+	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
+	unzip membrane-service-proxy-4.2.1.zip
+	rm membrane-service-proxy-4.2.1.zip
+	read -p "Meteor is needed to run api-managment, but it is installed globally.
 Install Meteor? [Y|n]" installP
-		case $installP in
-				[Nn]* ) ;;
-			* ) curl https://install.meteor.com/ | sh;;
-		esac
-		curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
-		tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
-		cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
-		rm etcd-v2.3.1-linux-amd64.tar.gz
-		rm -r ./etcd-v2.3.1-linux-amd64
-		command -v git >/dev/null 2>&1 || { echo >&2 "git is required but it's not installed.  Aborting."; exit 1; }
-		git clone https://github.com/membrane/api-management.git
-	fi
+	case $installP in
+			[Nn]* ) ;;
+		* ) curl https://install.meteor.com/ | sh;;
+	esac
+	curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
+	tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
+	cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
+	rm etcd-v2.3.1-linux-amd64.tar.gz
+	rm -r ./etcd-v2.3.1-linux-amd64
+	command -v git >/dev/null 2>&1 || { echo >&2 "git is required but it's not installed.  Aborting."; exit 1; }
+	git clone https://github.com/membrane/api-management.git
 
 	echo '<spring:beans xmlns="http://membrane-soa.org/proxies/1/"
 				  xmlns:spring="http://www.springframework.org/schema/beans"
@@ -69,8 +56,8 @@ Install Meteor? [Y|n]" installP
 				<httpClient />
 			</transport>
 
-			<serviceProxy port="8081" name="SHOP API">
-				<target host="https://api.predic8.de/shop/" port="80"/>
+			<serviceProxy port="8081" name="junit API">
+				<target host="www.thomas-bayer.com" port="80"/>
 			</serviceProxy>
 
 			<serviceProxy port="9001" name="AdminConsole">
