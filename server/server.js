@@ -515,7 +515,7 @@ function readservicesonchange() {
                     profile: {
                         surname: surname,
                         firstname: firstname,
-                        status: "waiting"
+                        status: "approved"
                     },
                     roles: []
                 });
