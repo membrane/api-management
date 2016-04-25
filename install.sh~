@@ -69,8 +69,8 @@ Install Meteor? [Y|n]" installP
 				<httpClient />
 			</transport>
 
-			<serviceProxy port="8081" name="SHOP API">
-				<target host="https://api.predic8.de/shop/" port="80"/>
+			<serviceProxy port="8081" name="junit API">
+				<target host="www.thomas-bayer.com" port="80"/>
 			</serviceProxy>
 
 			<serviceProxy port="9001" name="AdminConsole">
