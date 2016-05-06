@@ -1,5 +1,6 @@
 #!/bin/sh
 main(){
+	UNAME=$(uname)
 	echo "=====================================================================
 This script installs API-Management, etcd and Membrane Service Proxy.
 ====================================================================="
@@ -22,11 +23,23 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	rm membrane-service-proxy-4.2.1.zip
 	
 	command -v meteor >/dev/null 2>&1 || { echo >&2 curl https://install.meteor.com/ | sh; }
-	curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
-	tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
-	cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
-	rm etcd-v2.3.1-linux-amd64.tar.gz
-	rm -r ./etcd-v2.3.1-linux-amd64
+	if [ "$UNAME" != "Linux" -a  "$UNAME" != "Darwin"] ; then
+		exit 1
+	fi	
+	if [ "$UNAME" = "Linux" ] ; then
+		curl -L  https://github.com/coreos/etcd/releases/download/v2.3.1/etcd-v2.3.1-linux-amd64.tar.gz -o etcd-v2.3.1-linux-amd64.tar.gz
+		tar xzvf etcd-v2.3.1-linux-amd64.tar.gz
+		cp ./etcd-v2.3.1-linux-amd64/etcd ./bin/etcd
+		rm etcd-v2.3.1-linux-amd64.tar.gz
+		rm -r ./etcd-v2.3.1-linux-amd64	
+	fi
+	if [ "$UNAME" = "Darwin" ] ; then
+		curl -L  https://github.com/coreos/etcd/releases/download/v2.3.3/etcd-v2.3.3-darwin-amd64.zip -o etcd-v2.3.3-darwin-amd64.zip
+		unzip etcd-v2.3.3-darwin-amd64.zip
+		cp ./etcd-v2.3.3-darwin-amd64/etcd ./bin/etcd
+		rm etcd-v2.3.3-darwin-amd64.zip
+		rm -r ./etcd-v2.3.3-darwin-amd64	
+	fi
 	command -v git >/dev/null 2>&1 || { echo >&2 "git is required but it's not installed.  Aborting."; exit 1; }
 	git clone https://github.com/membrane/api-management.git
 
