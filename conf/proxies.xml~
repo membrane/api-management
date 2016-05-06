@@ -22,12 +22,12 @@
 			</transport>
 
 
-			<serviceProxy port="9090" name="Tea Shop Sample API">
+			<serviceProxy port="8080" name="Tea Shop Sample API">
 				<path>/shop</path>
 				<target host="api.predic8.de" port="443"/>
 			</serviceProxy>
 			
-			<soapProxy port="9090" wsdl="http://www.thomas-bayer.com/axis2/services/BLZService?wsdl">
+			<soapProxy port="8080" wsdl="http://www.thomas-bayer.com/axis2/services/BLZService?wsdl">
 			</soapProxy>
 
 			<serviceProxy port="9001" name="AdminConsole">
