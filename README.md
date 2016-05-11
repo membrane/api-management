@@ -3,7 +3,7 @@ API Management solution based on Membrane Service Proxy providing a developer po
 
 ###Installation:
 
-Run:
+For Linux & Mac OSX run:
 ```bash
 curl https://raw.githubusercontent.com/membrane/api-management/master/install.sh | sh
 ```
