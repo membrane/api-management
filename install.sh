@@ -23,7 +23,7 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	rm membrane-service-proxy-4.2.1.zip
 	
 	command -v meteor >/dev/null 2>&1 || { echo >&2 curl https://install.meteor.com/ | sh; }
-	if [ "$UNAME" != "Linux" -a  "$UNAME" != "Darwin"] ; then
+	if [ "$UNAME" != "Linux" -a  "$UNAME" != "Darwin" ] ; then
 		exit 1
 	fi	
 	if [ "$UNAME" = "Linux" ] ; then
