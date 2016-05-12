@@ -1,4 +1,6 @@
 #!/bin/sh
+[[ $TRACE ]] && set -x # For debugging
+[[ $EXIT ]] && set -e # For debugging
 main(){
 	UNAME=$(uname)
 	echo "=====================================================================
@@ -52,7 +54,7 @@ First startup might take a while because the meteor application needs to be init
 ======================================================================================"
 	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 	pids=()
-	$DIR/etcd & pids+=($!); $DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & pids+=($!); cd $DIR/../api-management ; meteor & pids+=($!)
+	$DIR/etcd && pids+=($!); $DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml && pids+=($!); cd $DIR/../api-management ; meteor && pids+=($!)
 	sleep 60
 	read -p "====================================================================
 Type q to quit all subprocesses and this one, Q to end this process:
