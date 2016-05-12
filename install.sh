@@ -21,7 +21,7 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	command -v unzip >/dev/null 2>&1 || { echo >&2 "unzip is required but it's not installed.  Aborting."; exit 1; }
 	command -v tar >/dev/null 2>&1 || { echo >&2 "tar is required but it's not installed.  Aborting."; exit 1; }
 	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
-	unzip membrane-service-proxy-4.2.1.zip
+	unzip -q membrane-service-proxy-4.2.1.zip
 	rm membrane-service-proxy-4.2.1.zip
 	
 	command -v meteor >/dev/null 2>&1 || { curl https://install.meteor.com/ | sh; }
