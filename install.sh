@@ -78,5 +78,6 @@ start api-management by running ./membrane-api-mgr/bin/start.sh
 
 bye.
 ==============================================================="
+exit 0
 }
 main "$@"
