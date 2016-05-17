@@ -4,25 +4,6 @@
                 {{>adminnavbar}}
             <div class="container">
                 <br>
-                <div class="modal fade" id="succesmodal">
-                    <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-
-                            <div class="modal-header">
-                                <h4 class="modal-title">Changes Saved</h4>
-                            </div>
-
-                            <div class="modal-body">
-                               All changes were saved.
-                            </div>
-
-                            <div class="modal-footer">
-                                <input type="button" id="ok" value="OK" class="btn-primary">
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
                 <br>
                 <br>
                 <table class="table table-striped admin_policiesdetailtable">
@@ -86,9 +67,15 @@
 
                     </tr>
                     <tr>
-                        <th>Groups
-                            {{#if aviablegroups}}
-                                <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
+                        <th>Access
+                            <br>
+                            {{#if unauthenticated}}
+                                <input type="checkbox" name="unauthenticated" value="true"  class="unauthenticated" checked> unauthenticated <br>
+                            {{else}}
+                                <input type="checkbox" name="unauthenticated" value="true"  class="unauthenticated" > unauthenticated <br>
+                                {{#if aviablegroups}}
+                                    <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
+                                {{/if}}
                             {{/if}}
                             <div class="modal fade" id="groupsmodal">
                                 <div class="modal-dialog modal-sm">
@@ -133,14 +120,37 @@
                     <tr>
                         <th>Rate Limit</th>
                         <td>
-                            <input type="number" name="rateLimitRequests" id="rateLimitRequests" placeholder="Requests" value="{{rateLimitRequests}}" class="form-control"> /  <input type="number" id="rateLimitInterval" name="rateLimitInterval" placeholder="Interval in seconds" value="{{rateLimitInterval}}" class="form-control">
+                            <input type="number" name="rateLimitRequests" id="rateLimitRequests" placeholder="Requests" value="{{rateLimitRequests}}" > /
+                            <input type="number" id="rateLimitInterval" name="rateLimitInterval" placeholder="Interval in seconds" value="{{rateLimitInterval}}" >
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="60=1 minute, 3600=1 hour, 86400=1 day">
+                                ?
+                            </button>
+
                         </td>
                     </tr>
                     <tr>
                         <th>Quota</th>
                         <td>
-                            <input type="text" name="QuotaSize" id="QuotaSize" placeholder="Size (e.g. 1M)" value="{{QuotaSize}}" class="form-control"> /  <input type="number" id="QuotaInterval" name="QuotaInterval" placeholder="Interval in seconds" value="{{QuotaInterval}}" class="form-control">
+                            <input type="text" name="QuotaSize" id="QuotaSize" placeholder="Size (e.g. 1M)" value="{{QuotaSize}}" >
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="1B= 1 byte, 1K=1 kilobyte, 1M=1 megabyte, 1G=1 gigabyte, 1T=1 terabyte">
+                                ?
+                            </button>/
+                            <input type="number" id="QuotaInterval" name="QuotaInterval" placeholder="Interval in seconds" value="{{QuotaInterval}}" >
+                            <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="top" title="60=1 minute, 3600=1 hour, 86400=1 day">
+                                ?
+                            </button>
                         </td>
+                    </tr>
+                    <tr>
+                        <th>Expiration</th>
+                        <td><input type="radio" value="never" name="expires" class="expires" checked id="neverexp">Never <br>
+                            <input type="radio" value="after" name="expires" class="expires" id="afterexp">After <input type="number" id="expiresT">
+                            <select id="expiresS">
+                                <option value="H">Hours</option>
+                                <option value="D">Days</option>
+                                <option value="M">Months</option>
+                                <option value="Y">Years</option>
+                            </select> </td>
                     </tr>
                     <tr>
                         <td colspan="2"> <button id="save" class="btn btn-primary">save</button></td>

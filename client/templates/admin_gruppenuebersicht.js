@@ -20,8 +20,11 @@ Template.admin_gruppenuebersicht.helpers({
 });
 Template.admin_gruppenuebersicht.events({
     "click .del": function(event){
-        if(event.target.id=="") Meteor.call("dellgroup", event.target.parentElement.id);
-        else Meteor.call("dellgroup", event.target.id);
+        if(confirm("Do you really want to delete this group?")){
+            if(event.target.id=="") Meteor.call("dellgroup", event.target.parentElement.id);
+            else Meteor.call("dellgroup", event.target.id);
+        }
+
 
     },
     "click #add": function(event){

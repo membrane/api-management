@@ -11,12 +11,18 @@
                 <br>
                 <br>
                 <table class="table table-striped">
-                    <thead><tr><th>Id</th></tr></thead>
+                    <thead><tr><th>Id</th><th>Host</th><th>Port</th></tr></thead>
                     <tbody>
                     {{#each membranes}}
                         <tr>
                             <td>
-                                {{this.name}} ({{this.host}}:{{this.port}})
+                                {{this.name}}
+                            </td>
+                            <td>
+                                {{this.host}}
+                            </td>
+                            <td>
+                                {{this.port}}
                             </td>
                         </tr>
                     {{/each}}

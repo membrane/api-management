@@ -11,7 +11,7 @@
             <table class="table table-striped">
                 <thead>
                 <tr>
-                    <th>Policy</th><th>RateLimit</th><th>Quota</th><th>Delete</th>
+                    <th>Policy</th><th>RateLimit</th><th>Quota</th><th>Expires</th><th>Delete</th>
                 </tr>
 
                 </thead>
@@ -21,6 +21,7 @@
                         <td><a href="/policy/{{this._id}}" >{{this.name}}</a></td>
                         <td>{{this.rateLimit.requests}} {{this.rateLimit.interval_}}</td>
                         <td>{{this.quota.size}} {{this.quota.interval_}}</td>
+                        <td>{{this.expires}}</td>
                         <td>
                             <button class="delete btn btn-danger" data-toggle="tooltip" title="Delete policy" value="{{this._id}}">
                                 <span class="glyphicon glyphicon-trash" aria-hidden="true">

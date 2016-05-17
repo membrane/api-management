@@ -2,7 +2,10 @@ Meteor.subscribe("policies");
 Meteor.subscribe("subscriptions");
 Meteor.subscribe("UserAccounts");
 
-
+function getdate(exp){
+    var d = new Date();
+    return d.toISOString();
+}
 
 Template.admin_subscriptionnew.rendered=function(){
     if(getCookie("infoalertsubscription")=="true") $('#alertinfo').hide(0);
@@ -14,12 +17,7 @@ Template.admin_subscriptionnew.rendered=function(){
 
 Template.admin_subscriptionnew.helpers({
     policy: function(){
-        if(policies.findOne({name:"unauthorized"})!=undefined){
-            return policies.find({_id:{
-                $ne: policies.findOne({name:"unauthorized"})._id
-            }});
-        }
-        else return policies.find();
+        return policies.find();
     },
     user: function(){
         return Meteor.users.find();
@@ -36,7 +34,8 @@ Template.admin_subscriptionnew.events({
             "_id": Random.id(),
             "policy": $("#policies").val(),
             "user": $("#user").val(),
-            "key": $("#key")[0].value
+            "key": $("#key")[0].value,
+            "expires" : getdate(policies.findOne({_id: $("#policies").val()}).expires)
         });
 
         $('#save').addClass('disabled');

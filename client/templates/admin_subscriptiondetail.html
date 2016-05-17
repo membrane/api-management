@@ -5,9 +5,10 @@
             {{>adminnavbar}}
             <div class="container">
                 <pre>
-                    Policy: {{policy.name}}
-                    User:   {{user.emails.[0].address}}
-                    Key:    {{key}}
+                    Policy:     {{policy.name}}
+                    User:       {{user.emails.[0].address}}
+                    Key:        {{key}}
+                    Expires:    {{expires}}
                 </pre>
             </div>
         {{else}}

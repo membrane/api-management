@@ -17,7 +17,8 @@ Template.admin_subscriptionsuebersicht.helpers({
                policy: entry.policy,
                user: entry.user,
                username: Meteor.users.findOne({_id:entry.user}).emails[0].address,
-               policyname:  policies.findOne({_id:entry.policy}).name
+               policyname:  policies.findOne({_id:entry.policy}).name,
+               expires: entry.expires
            });
         });
         return rem;
