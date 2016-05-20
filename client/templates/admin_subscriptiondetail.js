@@ -27,6 +27,6 @@ Template.admin_subscriptiondetail.helpers({
         return policies.find({"_id":subscriptions.find({_id: subscriptionid}).fetch()[0].policy}).fetch()[0];
     },
     expires: function(){
-        return subscriptions.find({_id: subscriptionid}).fetch()[0].expires;
+        return new Date(subscriptions.find({_id: subscriptionid}).fetch()[0].expires).toString();
     }
 });

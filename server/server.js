@@ -521,6 +521,12 @@ function readservicesonchange() {
                 });
             }
         },
+        altergroups: function(userid, groups){
+            console.log(userid, groups);
+            if (Roles.userIsInRole(this.userId, ['admin'])) {
+                Meteor.users.update({_id: userid}, {$set: {roles: groups}});
+            }
+        },
         alterstatus: function (userid, newstatus) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
                 Meteor.users.update({_id: userid}, {$set: {"profile.status": newstatus}});

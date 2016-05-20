@@ -124,7 +124,7 @@ Template.admin_policiesnew.events({
                 tmp.update({_id:$(this).val()},{$set:{type:"group"}});
             }
 
-        })
+        });
         $('#groupsmodal').modal('hide');
     }
 });

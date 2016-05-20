@@ -19,30 +19,65 @@
                     <tbody>
                     <tr>
                         <td>
-                            <div id="firstname">{{user.profile.firstname}}</div>
+                            <div id="firstname">{{firstname}}</div>
                         </td>
                         <td>
-                            <div id="surname">{{user.profile.surname}}</div>
+                            <div id="surname">{{surname}}</div>
                         </td>
                         <td>
-                            <div id="mail">{{user.emails.[0].address}}</div>
+                            <div id="mail">{{email}}</div>
                         </td>
                         <td>
-                            <ul>
-                                {{#each user.roles}}
-                                    <li>{{this}} <a href="#" class="del btn" data-toggle="tooltip" title="Remove group"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a></li>
-                                {{/each}}
+                            <table>
+                                {{#each roles}}
+                                    <tr>
+                                        <td>
+                                            {{this}}
+                                        </td>
+                                        <td>
+                                            <button value="{{this}}" class="btn btn-danger gmin" data-toggle="tooltip" title="Remove group">
+                                            <span class="glyphicon glyphicon-trash" aria-hidden="true">
 
+                                            </span>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {{/each}}
+                            </table>
                                 {{#if groups}}
-                                <select id="group">
-                                    {{#each groups}}
-                                        <option value="{{this.name}}">{{this.name}}
-                                        </option>
-                                    {{/each}}
-                                </select>
-                                <input type="button" class="btn btn-primary" id="add" value="add" data-toggle="tooltip" title="Add group">
+                                    <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
                                 {{/if}}
-                            </ul>
+                                <div class="modal fade" id="groupsmodal">
+                                    <div class="modal-dialog modal-sm">
+                                        <div class="modal-content">
+
+                                            <div class="modal-header">
+                                                <h4 class="modal-title">Add groups</h4>
+                                            </div>
+
+                                            <div class="modal-body">
+                                                <table border="0">
+                                                    {{#each groups}}
+                                                        <tr>
+                                                            <td><label for="name">{{this.name}}</label></td>
+                                                            <td><input type="checkbox" class="groupotions" value="{{this.name}}"/></td>
+                                                        </tr>
+                                                    {{/each}}
+                                                </table>
+
+
+
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" id="addgrp">Add</button>
+                                                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                         </td>
                         <td>
                             <select id="options">
@@ -53,13 +88,12 @@
                             </select>
                         </td>
                         <td>
-                            <input type="password" id="pw" placeholder="password" value="123456">
-                            <input class="btn btn-primary" type="button" id="password" value="change password">
-                            <div class="alert alert-success hidden">&gt; changes saved</div>
+                            <input type="password" id="pw" placeholder="password" value="">
                         </td>
                     </tr>
                     </tbody>
                 </table>
+                <input type="button" value="save" class="btn btn-primary" id="save">
             </div>
         {{else}}
             {{>usernavbar}}

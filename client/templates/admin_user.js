@@ -8,7 +8,16 @@ function isemail(str){
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(str);
 }
-
+Template.admin_user.rendered= function(){
+    if(querystring("message")[0]!=undefined){
+        area = $(".alert-success");
+        area[0].innerHTML=decodeURI(querystring("message")[0]);
+        area.removeClass("hidden");
+        area.fadeOut(3000, function(){
+            area.addClass("hidden");
+        });;
+    }
+};
 Template.admin_user.events({
     'click .delete': function(event){
         if(event.target.value!=undefined) Ziel = event.target.value; //Auf den Button geklickt.

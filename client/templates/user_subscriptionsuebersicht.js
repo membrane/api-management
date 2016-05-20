@@ -17,6 +17,7 @@ Template.user_subscriptionsuebersicht.helpers({
             );
         rem= [];
         sub.forEach(function(entry){
+            if(entry.expires!="never") entry.expires= new Date(entry.expires).toString();
             if(policies.findOne({_id:entry.policy})!=undefined) rem.push({
                 _id: entry._id,
                 policy: entry.policy,
