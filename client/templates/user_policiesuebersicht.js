@@ -8,7 +8,7 @@ Template.user_policiesuebersicht.helpers({
         polic = [];
         pol.forEach(function(ent){
 
-            if(subscriptions.findOne({policy: ent._id, user: Meteor.userId()})!=undefined || ent.name=="unauthorized"){
+            if(subscriptions.findOne({policy: ent._id, user: Meteor.userId()})!=undefined || ent.unauthenticated){
                 ent.subscribed = true;
             }
             else ent.subscribed = false;

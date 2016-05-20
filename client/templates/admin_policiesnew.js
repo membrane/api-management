@@ -65,8 +65,11 @@ Template.admin_policiesnew.events({
         if(($("#rateLimitRequests")[0].value<=0 && $("#rateLimitRequests")[0].value!= "")|| ($("#rateLimitInterval")[0].value<=0 && $("#rateLimitInterval")[0].value!= "") || ($("#QuotaInterval")[0].value<=0 && $("#QuotaInterval")[0].value!= "") || isnotsize($("#QuotaSize")[0].value))
             alert("There was a problem: Some inputs were not in the correct format.")
         else {
-            if($(".expires:checked").val()=="never") exp="never";
-            else exp=$("#expiresT")[0].value+$("#expiresS").val();
+            if($(".expires:checked")[0]!=undefined){
+                if($(".expires:checked").val()=="never") exp="never";
+                else exp=$("#expiresT")[0].value+$("#expiresS").val();
+            }
+            else exp="never";
             policies.insert({
                 "name": $("#name")[0].value,
                 "unauthenticated": tmp.findOne({type: "unauthenticated"}).value,

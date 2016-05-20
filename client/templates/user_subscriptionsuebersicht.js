@@ -4,13 +4,16 @@ Meteor.subscribe("UserAccounts");
 Template.user_subscriptionsuebersicht.helpers({
     subscription: function(){
         sub = subscriptions.find().fetch();
-        if(policies.findOne({name:"unauthorized"})!=undefined)
+        policies.find({unauthenticated:true}).fetch().forEach(function(ent){
                 sub.push({
                     "_id" : Random.id(),
-                    "policy" : policies.findOne({name:"unauthorized"})._id,
+                    "policy" : ent._id,
                     "user" : Meteor.userId(),
-                    "key" : "none"
-                }
+                    "key" : "none",
+                    "expires" : "never"
+                });
+        }
+
             );
         rem= [];
         sub.forEach(function(entry){
@@ -20,7 +23,8 @@ Template.user_subscriptionsuebersicht.helpers({
                 user: entry.user,
                 username: Meteor.users.findOne({_id:entry.user}).emails[0].address,
                 policyname: policies.findOne({_id:entry.policy}).name,
-                services: policies.findOne({_id:entry.policy}).services
+                services: policies.findOne({_id:entry.policy}).services,
+                expires: entry.expires
             });
         });
         return rem;

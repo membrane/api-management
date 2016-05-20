@@ -35,7 +35,7 @@ Template.user_policiesdetail.helpers({
         return subscriptions.findOne({policy: policyid, user: Meteor.userId()})!=undefined;
     },
     unauthorized: function(){
-        return  policies.find({_id:policyid}).fetch()[0].name=="unauthorized";
+        return  policies.find({_id:policyid}).fetch()[0].unauthenticated==true;
     }
 });
 
@@ -45,7 +45,7 @@ Template.user_policiesdetail.events({
         if(_obj!= undefined){
             if(subscriptions.find({policy: _obj._id,
                     user: Meteor.userId()}).fetch().length === 0){
-                if(_obj.name!="unauthorized")Meteor.call("insertsubscription", Meteor.userId(), _obj._id, Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8)+ Math.random().toString(36).slice(-8));
+                if(!_obj.unauthenticated)Meteor.call("insertsubscription", Meteor.userId(), _obj._id, Math.random().toString(36).slice(-8)+Math.random().toString(36).slice(-8)+ Math.random().toString(36).slice(-8));
             }
         }
     },

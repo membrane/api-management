@@ -2,16 +2,13 @@ Meteor.subscribe("policies");
 Meteor.subscribe("subscriptions");
 Meteor.subscribe("UserAccounts");
 
-function getdate(exp){
-    var d = new Date();
-    return d.toISOString();
-}
+
 
 Template.admin_subscriptionnew.rendered=function(){
     if(getCookie("infoalertsubscription")=="true") $('#alertinfo').hide(0);
     $('#alertinfo').on('closed.bs.alert', function () {
         setCookie("infoalertsubscription", "true", 365);
-        console.log(getCookie("infoalertsubscription"));
+        //console.log(getCookie("infoalertsubscription"));
     });
 };
 

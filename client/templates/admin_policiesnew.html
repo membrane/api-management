@@ -140,17 +140,20 @@
                         </button>
                     </td>
                 </tr>
-                <tr>
-                    <th>Expiration</th>
-                    <td><input type="radio" value="never" name="expires" class="expires" checked>Never <br>
-                        <input type="radio" value="after" name="expires" class="expires">After <input type="number" id="expiresT">
-                        <select id="expiresS">
-                            <option value="H">Hours</option>
-                            <option value="D">Days</option>
-                            <option value="M">Months</option>
-                            <option value="Y">Years</option>
-                        </select> </td>
-                </tr>
+                {{#if unauthenticated}}
+                {{else}}
+                    <tr>
+                        <th>Expiration</th>
+                        <td><input type="radio" value="never" name="expires" class="expires" checked>Never <br>
+                            <input type="radio" value="after" name="expires" class="expires">After <input type="number" id="expiresT">
+                            <select id="expiresS">
+                                <option value="H">Hours</option>
+                                <option value="D">Days</option>
+                                <option value="M">Months</option>
+                                <option value="Y">Years</option>
+                            </select> </td>
+                    </tr>
+                {{/if}}
                 <tr>
                     <td colspan="2"> <button id="save" class="btn btn-primary">save</button><button id="reset" class="btn btn-warning">reset</button></td>
                 </tr>

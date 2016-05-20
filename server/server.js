@@ -653,13 +653,25 @@ function readservicesonchange() {
                     if (subscriptions.find({
                             policy: policy,
                             user: userid
-                        }).fetch().length === 0)
-                        subscriptions.insert({
-                            _id: Random.id(),
-                            policy: policy,
-                            user: userid,
-                            key: key
-                        });
+                        }).fetch().length === 0){
+                        if(policies.findOne({_id: policy}).expires!="never")
+                            subscriptions.insert({
+                                _id: Random.id(),
+                                policy: policy,
+                                user: userid,
+                                key: key,
+                                expires: getdate(policies.findOne({_id: policy}).expires)
+                            });
+                        else
+                            subscriptions.insert({
+                                _id: Random.id(),
+                                policy: policy,
+                                user: userid,
+                                key: key
+                            });
+
+                    }
+
                 }
             } else if (Roles.userIsInRole(this.userId, ['admin']))
                 subscriptions.insert({
@@ -831,6 +843,7 @@ function readservicesonchange() {
                         id.push(entry._id);
                     }
                 });
+                if(entry.unauthenticated) id.push(entry._id);
             });
             return policies.find({_id: {$in: id}});
         }
