@@ -51,7 +51,7 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	cp ./api-management/conf/proxies.xml ./conf/proxies.xml
 
 	echo '
-	#/bin/sh
+	#/bin/bash
 [[ $TRACE ]] && set -x # For debugging
 [[ $EXIT ]] && set -e # For debugging
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -75,6 +75,7 @@ etcd already started
 ================================"
 		else
 				$DIR/etcd & echo "$!" > $DIR/../tmp/etcd.tmp;
+				disown;
 	fi
 }
 stopetcd(){
@@ -100,6 +101,7 @@ service-proxy already started
 ================================"
 		else
 			$DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & echo "$!" > $DIR/../tmp/service-proxy.tmp;
+			disown;
 	fi
 }
 stopserviceproxy(){
@@ -125,6 +127,7 @@ api-management already started
 ================================"
 		else
 			cd $DIR/../api-management ; meteor & echo "$!" > $DIR/../tmp/api-management.tmp;
+			disown;
 			cd $DIR;
 	fi
 }
@@ -155,12 +158,15 @@ First startup might take a while because the meteor application needs to be init
 			    ;;
 			startetcd)
 					startetcd
+					
 				;;
 			startserviceproxy)
 					startserviceproxy
+					
 				;;
 			startapimanagement)
 					startapimanagement
+					
 				;;
 			stop) 
 					
