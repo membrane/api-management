@@ -50,8 +50,7 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 
 	cp ./api-management/conf/proxies.xml ./conf/proxies.xml
 
-	echo '
-	#/bin/bash
+	echo '#/bin/sh
 [[ $TRACE ]] && set -x # For debugging
 [[ $EXIT ]] && set -e # For debugging
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -74,8 +73,23 @@ startetcd(){
 etcd already started
 ================================"
 		else
-				$DIR/etcd & echo "$!" > $DIR/../tmp/etcd.tmp;
+				$DIR/etcd 2> $DIR/../tmp/etcd.log & echo "$!" > $DIR/../tmp/etcd.tmp;
 				disown;
+				for ((z=0;z<300;z++))
+				do
+					if grep -q " published " $DIR/../tmp/etcd.log; 
+					then 
+						echo "etcd startup finished."
+						break; 
+					fi;
+					sleep 1
+					if [ "$z" -ge "298" ] ; 
+					then 
+						echo "ERROR: etcd startup aborted. View membrane-api-mgr/tmp/etcd.log"
+						exit 1
+						break; 
+					fi;
+				done
 	fi
 }
 stopetcd(){
@@ -85,7 +99,7 @@ stopetcd(){
 shutting down etcd
 ================================"
 			pkill -P $(cat $DIR/../tmp/etcd.tmp)
-			kill  $(cat $DIR/../tmp/etcd.tmp)
+			kill $(cat $DIR/../tmp/etcd.tmp)
 			rm $DIR/../tmp/etcd.tmp	
 		else
 				echo "================================
@@ -100,8 +114,23 @@ startserviceproxy(){
 service-proxy already started
 ================================"
 		else
-			$DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & echo "$!" > $DIR/../tmp/service-proxy.tmp;
+			$DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml > $DIR/../tmp/service-proxy.log & echo "$!" > $DIR/../tmp/service-proxy.tmp;
 			disown;
+			for ((z=0;z<300;z++))
+			do
+				if grep -q "running" $DIR/../tmp/service-proxy.log; 
+				then 
+					echo "Membrane service-proxy startup finished."
+					break; 
+				fi;
+				sleep 1
+				if [ "$z" -ge "298" ] ; 
+				then 
+					echo "ERROR: Membrane service-proxy startup aborted. View membrane-api-mgr/tmp/service-proxy.log"
+					exit 1
+					break; 
+				fi;
+			done
 	fi
 }
 stopserviceproxy(){
@@ -126,10 +155,31 @@ startapimanagement(){
 api-management already started
 ================================"
 		else
-			cd $DIR/../api-management ; meteor & echo "$!" > $DIR/../tmp/api-management.tmp;
+			cd $DIR/../api-management ; meteor > $DIR/../tmp/meteor.log & echo "$!" > $DIR/../tmp/api-management.tmp;
 			disown;
 			cd $DIR;
+			for ((z=0;z<300;z++))
+			do
+				if grep -q "Can" $DIR/../tmp/meteor.log; 
+				then 
+					echo "ERROR: Meteor could not be started. View membrane-api-mgr/tmp/meteor.log";
+					break; 
+				fi;
+				if grep -q "running" $DIR/../tmp/meteor.log; 
+				then 
+					echo "Meteor startup finished."
+					break; 
+				fi;
+				sleep 1
+				if [ "$z" -ge "298" ] ; 
+				then 
+					echo "ERROR: Meteor startup aborted. View membrane-api-mgr/tmp/meteor.log"
+					exit 1
+					break; 
+				fi;
+			done
 	fi
+	
 }
 stopapimanagement(){
 	if [ -e $DIR/../tmp/api-management.tmp ]
@@ -189,7 +239,9 @@ First startup might take a while because the meteor application needs to be init
 	else
 		help
 fi
+
 exit 0
+
  ' >./bin/api-management.sh
 	chmod +x ./bin/api-management.sh
 	echo "===============================================================================
