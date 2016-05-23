@@ -16,6 +16,9 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	if [ ! -d "bin" ]; then
 		mkdir bin
 	fi
+	if [ ! -d "tmp" ]; then
+		mkdir tmp
+	fi
 	command -v git >/dev/null 2>&1 || { echo >&2 "git is required but it's not installed.  Aborting."; exit 1; }
 	command -v curl >/dev/null 2>&1 || { echo >&2 "curl is required but it's not installed.  Aborting."; exit 1; }
 	command -v unzip >/dev/null 2>&1 || { echo >&2 "unzip is required but it's not installed.  Aborting."; exit 1; }
@@ -49,34 +52,142 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 
 	echo '
 	#/bin/sh
-	echo "======================================================================================
+[[ $TRACE ]] && set -x # For debugging
+[[ $EXIT ]] && set -e # For debugging
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+help() {
+   printf "\
+start	 			start etcd, membrane service proxy and api-managment
+stop	 			stop etcd, membrane service proxy and api-managment
+startetcd			start etcd
+stopetcd			stop etcd
+startserviceproxy		start membrane service proxy
+stopserviceproxy		stop membrane service proxy
+startapimanagement		start api-mangement
+stopapimanagement		stop api-mangement
+"
+}
+startetcd(){
+	if [ -e $DIR/../tmp/etcd.tmp ]
+		then
+			echo "================================
+etcd already started
+================================"
+		else
+				$DIR/etcd & echo "$!" > $DIR/../tmp/etcd.tmp;
+	fi
+}
+stopetcd(){
+	if [ -e $DIR/../tmp/etcd.tmp ]
+		then
+		echo "================================
+shutting down etcd
+================================"
+			pkill -P $(cat $DIR/../tmp/etcd.tmp)
+			kill  $(cat $DIR/../tmp/etcd.tmp)
+			rm $DIR/../tmp/etcd.tmp	
+		else
+				echo "================================
+etcd is not started
+================================"
+	fi
+}
+startserviceproxy(){
+	if [ -e $DIR/../tmp/service-proxy.tmp ]
+		then
+			echo "================================
+service-proxy already started
+================================"
+		else
+			$DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & echo "$!" > $DIR/../tmp/service-proxy.tmp;
+	fi
+}
+stopserviceproxy(){
+	if [ -e $DIR/../tmp/service-proxy.tmp ]
+		then
+		echo "================================
+shutting down service-proxy
+================================"
+			pkill -P $(cat $DIR/../tmp/service-proxy.tmp)
+			kill $(cat $DIR/../tmp/service-proxy.tmp)
+			rm $DIR/../tmp/service-proxy.tmp
+		else
+			echo "================================
+service-proxy is not started
+================================"
+	fi
+}
+startapimanagement(){
+	if [ -e $DIR/../tmp/api-management.tmp ]
+		then
+			echo "================================
+api-management already started
+================================"
+		else
+			cd $DIR/../api-management ; meteor & echo "$!" > $DIR/../tmp/api-management.tmp;
+			cd $DIR;
+	fi
+}
+stopapimanagement(){
+	if [ -e $DIR/../tmp/api-management.tmp ]
+		then
+			echo "================================
+shutting down api-management
+================================"
+			kill $(cat $DIR/../tmp/api-management.tmp)
+			rm $DIR/../tmp/api-management.tmp	
+		else
+			echo "================================
+api-management is not started
+================================"
+	fi
+}
+if [ "$#" -ge "1" ] 
+	then
+		case "$1" in
+			start) 	
+			echo "======================================================================================
 First startup might take a while because the meteor application needs to be initalised
 ======================================================================================"
-	DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-	pids=()
-	$DIR/etcd & pids+=($!); $DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml & pids+=($!); cd $DIR/../api-management ; meteor & pids+=($!)
-	sleep 60
-	read -p "====================================================================
-Type q to quit all subprocesses and this one, Q to end this process:
-====================================================================
-" Q
-	while true;
-	do
-		case $Q in
-			[q]* ) 	for pid in "${pids[@]}"; do
-					pkill -P "$pid"
-				done ;
+					startetcd;
+					startserviceproxy;
+					startapimanagement;				
+			    ;;
+			startetcd)
+					startetcd
+				;;
+			startserviceproxy)
+					startserviceproxy
+				;;
+			startapimanagement)
+					startapimanagement
+				;;
+			stop) 
+					
+				stopapimanagement
+				stopserviceproxy
+				stopetcd
 				pkill -P $$
-				break;;
-			[Q]*) 	break;;
-			* ) ;;
+			    ;;
+			stopetcd) stopetcd		
+			    ;;
+			stopserviceproxy) stopserviceproxy	
+			    ;;
+			stopapimanagement) stopapimanagement	
+			    ;;
+			*) help
+			    ;;
 		esac
-	done
-	sleep 5
-	echo "bye." ' >./bin/start.sh
-	chmod +x ./bin/start.sh
+
+
+	else
+		help
+fi
+exit 0
+ ' >./bin/api-management.sh
+	chmod +x ./bin/api-management.sh
 	echo "===============================================================
-start api-management by running ./membrane-api-mgr/bin/start.sh
+start api-management by running ./membrane-api-mgr/bin/api-management.sh start
 
 bye.
 ==============================================================="
