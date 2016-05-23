@@ -241,7 +241,6 @@ First startup might take a while because the meteor application needs to be init
 fi
 
 exit 0
-
  ' >./bin/api-management.sh
 	chmod +x ./bin/api-management.sh
 	echo "===============================================================================
