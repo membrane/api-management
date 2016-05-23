@@ -12,7 +12,7 @@ curl https://raw.githubusercontent.com/membrane/api-management/master/install.sh
 ###Start
 Execute
 ```bash
-./membrane-api-mgr/bin/start.sh
+./membrane-api-mgr/bin/api-management.sh start
 ```
 (The first startup might take a while, because the Meteor application needs to download some packages.)
 Now go to [http://localhost:3000/](http://localhost:3000/) and login as admin@example.com / admin .
