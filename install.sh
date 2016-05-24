@@ -155,17 +155,17 @@ startapimanagement(){
 api-management already started
 ================================"
 		else
-			cd $DIR/../api-management ; meteor > $DIR/../tmp/meteor.log & echo "$!" > $DIR/../tmp/api-management.tmp;
+			cd $DIR/../api-management ; meteor > $DIR/../tmp/api-management.log & echo "$!" > $DIR/../tmp/api-management.tmp;
 			disown;
 			cd $DIR;
 			for ((z=0;z<300;z++))
 			do
-				if grep -q "Can" $DIR/../tmp/meteor.log; 
+				if grep -q "Can" $DIR/../tmp/api-management.log; 
 				then 
-					echo "ERROR: Meteor could not be started. View membrane-api-mgr/tmp/meteor.log";
+					echo "ERROR: Meteor could not be started. View membrane-api-mgr/tmp/api-management.log";
 					break; 
 				fi;
-				if grep -q "running" $DIR/../tmp/meteor.log; 
+				if grep -q "running" $DIR/../tmp/api-management.log; 
 				then 
 					echo "Meteor startup finished."
 					break; 
@@ -173,7 +173,7 @@ api-management already started
 				sleep 1
 				if [ "$z" -ge "298" ] ; 
 				then 
-					echo "ERROR: Meteor startup aborted. View membrane-api-mgr/tmp/meteor.log"
+					echo "ERROR: Meteor startup aborted. View membrane-api-mgr/tmp/api-management.log"
 					exit 1
 					break; 
 				fi;

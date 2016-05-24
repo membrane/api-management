@@ -12,13 +12,14 @@ Template.admin_subscriptionsuebersicht.helpers({
         sub = subscriptions.find().fetch();
         rem= [];
         sub.forEach(function(entry){
+            if(entry.expires!="never") entry.expires = new Date(entry.expires).toString();
             if(policies.findOne({_id:entry.policy})!=undefined) rem.push({
                _id: entry._id,
                policy: entry.policy,
                user: entry.user,
                username: Meteor.users.findOne({_id:entry.user}).emails[0].address,
                policyname:  policies.findOne({_id:entry.policy}).name,
-               expires: new Date(entry.expires).toString()
+               expires: entry.expires
            });
         });
         return rem;
