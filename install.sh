@@ -203,8 +203,11 @@ if [ "$#" -ge "1" ]
 First startup might take a while because the meteor application needs to be initalised
 ======================================================================================"
 					startetcd;
+					echo "please wait ...";
 					startserviceproxy;
-					startapimanagement;				
+					echo "please wait ...";
+					startapimanagement;
+					echo "goto http://localhost:3000/";				
 			    ;;
 			startetcd)
 					startetcd
@@ -244,7 +247,10 @@ exit 0
  ' >./bin/api-management.sh
 	chmod +x ./bin/api-management.sh
 	echo "===============================================================================
-start api-management by running ./membrane-api-mgr/bin/api-management.sh start
+start api-management by running 
+
+cd ./membrane-api-mgr
+./bin/api-management.sh start
 
 bye.
 ==============================================================================="

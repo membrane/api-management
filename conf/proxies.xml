@@ -23,7 +23,7 @@
 
 
 			<serviceProxy port="9090" name="Fruit Shop Sample API">
-				<path>/shop</path>
+				<path>/shop/</path>
 				<target host="api.predic8.de" port="443">
 					<ssl />
 				</target>
