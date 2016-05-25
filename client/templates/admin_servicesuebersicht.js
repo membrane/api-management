@@ -1,6 +1,11 @@
 Template.admin_servicesuebersicht.helpers({
     'services': function(){
         return services.find();
+    },
+    'proxiesxmlhint': function(){
+        if(getCookie("proxieshint"))
+            return false;
+        else return true;
     }
 });
 
@@ -15,6 +20,9 @@ Template.admin_servicesuebersicht.rendered = function(){
         });;
     }
     Meteor.call("readservices");
+    $('#proxieshint').on('closed.bs.alert', function () {
+        setCookie("proxieshint", true, 20000);
+    })
 
 };
 Template.admin_servicesuebersicht.events({

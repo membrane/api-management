@@ -1,6 +1,21 @@
 Template.admin_user.helpers({
     user: function(){
-        return Meteor.users.find({});
+        var us=Meteor.users.find({}).fetch();
+        us.forEach(function(ent){
+            if(ent.profile.status=="unapproved") ent.unapproved=true;
+        });
+
+        return us;
+    },
+    unapproved: function(){
+        var un=false;
+        var us=Meteor.users.find({}).fetch();
+        us.forEach(function(ent){
+            if(ent.profile.status=="unapproved") {
+                un=true;
+            }
+        });
+        return un;
     }
 });
 
@@ -17,6 +32,7 @@ Template.admin_user.rendered= function(){
             area.addClass("hidden");
         });;
     }
+
 };
 Template.admin_user.events({
     'click .delete': function(event){

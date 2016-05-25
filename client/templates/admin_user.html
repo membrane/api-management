@@ -1,6 +1,11 @@
 <template name="admin_user">
             <h2>User</h2>
             <div class="alert alert-success hidden"></div>
+            {{#if unapproved}}
+                <div class="alert alert-info">
+                There are new unapproved users. Click on the user and set the status to approved or rejected.
+                </div>
+            {{/if}}
             <table class="admin_user table table-striped">
                 <thead>
                 <tr><th>User</th><th>Groups</th><th>Status</th><th>Delete</th></tr>
@@ -18,7 +23,11 @@
                             </ul>
                         </td>
                         <td>
-                            {{this.profile.status}}
+                            {{#if this.unapproved}}
+                                <b>{{this.profile.status}}</b>
+                            {{else}}
+                                {{this.profile.status}}
+                            {{/if}}
                         </td>
                         <td>
                             <button class="delete btn btn-danger" value="{{this._id}}" data-toggle="tooltip" title="Delete user">
