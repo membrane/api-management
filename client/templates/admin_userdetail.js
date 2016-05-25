@@ -8,21 +8,20 @@ userid=getuserid();
 _obj=  Meteor.users.findOne({"_id": getuserid()});
 Template.admin_userdetail.helpers({
     groups: function() {
-        if (tmp.findOne()) {
+        var ret = [];
+        if (tmp.findOne({type: "roles"}) != undefined){
+            var isnotinroles = true;
+            groups.find().fetch().forEach(function (ent) {
 
-            ret = [];
-
-            groups.find().fetch().forEach(function (entry) {
-                rez = true;
-                if (tmp.find({type: "roles"}).fetch() != undefined) {
-                    tmp.findOne({type: "roles"}).value.forEach(function (ent) {
-                        if (ent == entry.name) rez = false; //entry ist schon drin.
-                    });
-                }
-                if (rez) ret.push(entry);
+                isnotinroles = true;
+                tmp.findOne({type: "roles"}).value.forEach(function (entry) {
+                    if(ent.name==entry) isnotinroles=false;
+                });
+                if(isnotinroles)  ret.push(ent);
             });
             return ret;
         }
+        else return null;
     },
     firstname: function(){
         if(tmp.findOne({type:"firstname"})!=undefined)

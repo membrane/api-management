@@ -482,8 +482,8 @@ function readservicesonchange() {
             }
         },
         createuser: function (emailVar, passwordVar, surnameVar, firstnameVar) {
-            if(Meteor.users.findOne()!=undefined)
-                Accounts.createUser({
+            if (Meteor.users.findOne() != undefined) {
+                var id = Accounts.createUser({
                     email: emailVar,
                     password: passwordVar,
                     profile: {
@@ -492,7 +492,8 @@ function readservicesonchange() {
                         status: "unapproved"
                     }
                 });
-            else {
+                Meteor.users.update({"_id": id}, {$set: {"roles": ["evaluation"]}});
+            }else{
                 var id = Accounts.createUser({
                     email: emailVar,
                     password: passwordVar,
@@ -509,16 +510,16 @@ function readservicesonchange() {
         },
         createnewuser: function (firstname, surname, email, password) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
-                Accounts.createUser({
+                var id=Accounts.createUser({
                     email: email,
                     password: password,
                     profile: {
                         surname: surname,
                         firstname: firstname,
                         status: "approved"
-                    },
-                    roles: []
+                    }
                 });
+                Meteor.users.update({"_id":id}, {$set:{"roles": ["evaluation"] }});
             }
         },
         altergroups: function(userid, groups){
@@ -673,7 +674,8 @@ function readservicesonchange() {
                                 _id: Random.id(),
                                 policy: policy,
                                 user: userid,
-                                key: key
+                                key: key,
+                                expires: "never",
                             });
 
                     }
@@ -878,6 +880,8 @@ function readservicesonchange() {
                         id.push(entry._id);
                     }
                 });
+                if(entry.unauthenticated) id.push(entry._id);
+                //console.log(entry);
             });
             var pol = policies.find({_id: {$in: id}}).fetch();
             var id = [];

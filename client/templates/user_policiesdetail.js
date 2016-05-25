@@ -17,7 +17,6 @@ Template.user_policiesdetail.helpers({
         if(ret!=undefined){
             var serv=[];
             ret.services.forEach(function(entry){
-                console.log(entry._id, services.findOne({_id:entry.name}));
                 if(services.findOne({_id:entry._id})!=undefined) serv.push(services.findOne({_id:entry._id}));
             });
 
