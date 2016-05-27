@@ -9,11 +9,7 @@
     <div id="loginbuttons" class="container">
 
         <form novalidate="novalidate" action="signIn" id="signin-form_id" class="panel">
-            {{#if firstlogin}}
-                <div class="alert alert-success" id="firstlogin">
-                The default login is: <table><tr><th>username</th><td>admin@example.com</td></tr><tr><th>password</th><td>admin</td></tr></table>  Please make sure you change it before productive use.
-                </div>
-            {{/if}}
+            <div class="alert alert-success hidden" id="firstlogin">The default login is: <table><tr><th>username</th><td>admin@example.com</td></tr><tr><th>password</th><td>admin</td></tr></table>  Please make sure you change it before productive use.</div>
             <div class="alert alert-warning hidden" style="text-align:center" id="loginhint">
 
             </div>

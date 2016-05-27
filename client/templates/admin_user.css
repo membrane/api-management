@@ -1,3 +1,5 @@
 .admin_user td, th{
+    width: 160px;
     padding: 10px;
+    vertical-align: top;
 }

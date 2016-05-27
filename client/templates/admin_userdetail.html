@@ -6,26 +6,36 @@
                 <div class="alert alert-info">
                     Hover over the fields to change them.
                 </div>
-                <table class="admin_userdetail table table-striped">
-                    <thead><tr>
-                        <th>Firstname</th>
-                        <th>Surname</th>
-                        <th>Email</th>
-                        <th>Roles</th>
-                        <th>Status</th>
-                        <th>Password</th>
-                    </tr>
-                    </thead>
+                <table class="admin_userdetail2 table table-striped">
                     <tbody>
                     <tr>
+                        <th>
+                            Firstname
+                        </th>
                         <td>
                             <div id="firstname">{{firstname}}</div>
                         </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Surname
+                        </th>
                         <td>
                             <div id="surname">{{surname}}</div>
                         </td>
+
+                    </tr>
+                    <tr>
+                        <th>
+                            Email
+                        </th>
                         <td>
                             <div id="mail">{{email}}</div>
+                        </td>,
+                    </tr>
+                    <tr>
+                        <td>
+                            Roles
                         </td>
                         <td>
                             <table>
@@ -79,6 +89,9 @@
                                 </div>
 
                         </td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
                         <td>
                             <select id="options">
                                 <option value="approved" class="opt">approved</option>
@@ -87,6 +100,11 @@
                                 <option value="deactivated" class="opt">deactivated</option>
                             </select>
                         </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            Password
+                        </th>
                         <td>
                             <input type="password" id="pw" placeholder="password" value="">
                         </td>

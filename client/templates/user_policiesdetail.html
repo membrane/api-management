@@ -8,7 +8,7 @@
 
                 <ul border="0">
                     <h2><div>Policy: {{policy.name}}</div></h2>
-                    <h3><div>Description:</div></h3><div>{{policy.description}}</div>
+                    <h3><div>Description:</div></h3><div>{{#markdown}}{{policy.description}}{{/markdown}}</div>
                         <h3>Services:</h3>
                         <div>
                             <table class="table table-striped">

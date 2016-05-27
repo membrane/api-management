@@ -1,14 +1,18 @@
 /**
  * Created by oerder on 07.12.15.
  */
-Meteor.subscribe("UserAccounts");
-
-
-Template.usernotloggedin.helpers({
-    firstlogin: function(){
-        return Meteor.users.findOne({"emails.address" : 'admin@example.com'})!=undefined;
-    }
+Meteor.subscribe("UserAccounts", {
+    onReady: function () {
+        var digest = Package.sha.SHA256("admin");
+        Meteor.call("checkPassword", digest, function(err, result) {
+            if (result && Meteor.users.findOne({"emails.address" : 'admin@example.com'})!=undefined) {
+                $("#firstlogin").removeClass("hidden");
+            }
+        }); },
+    onError: function () { console.log("ERROR 12:", arguments); }
 });
+
+
 Template.usernotloggedin.events({
     'submit form': function(event) {
         event.preventDefault();

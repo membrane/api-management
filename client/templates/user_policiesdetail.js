@@ -34,7 +34,9 @@ Template.user_policiesdetail.helpers({
         return subscriptions.findOne({policy: policyid, user: Meteor.userId()})!=undefined;
     },
     unauthorized: function(){
-        return  policies.find({_id:policyid}).fetch()[0].unauthenticated==true;
+        if(policies.findOne({_id:policyid})!=undefined)
+            return  policies.findOne({_id:policyid}).unauthenticated==true;
+        else return null;
     }
 });
 

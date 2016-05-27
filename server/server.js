@@ -478,7 +478,8 @@ function readservicesonchange() {
         },
         setpassword: function (userid, newPassword) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
-                Accounts.setPassword(userid, newPassword);
+                Accounts.setPassword(userid, newPassword, {logout: false});
+                //Meteor.users.update({_id:userid}, {$set : { "resume.loginTokens" : [] }}, {multi:true});
             }
         },
         createuser: function (emailVar, passwordVar, surnameVar, firstnameVar) {
@@ -531,6 +532,9 @@ function readservicesonchange() {
         alterstatus: function (userid, newstatus) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
                 Meteor.users.update({_id: userid}, {$set: {"profile.status": newstatus}});
+                if(newstatus==="deactivated"){
+                    subscriptions.remove({user: userid});
+                }
             }
         },
         alterfirstname: function (userid, firstname) {
@@ -781,8 +785,15 @@ function readservicesonchange() {
                     }
                 });
             }
-        }
+        },
+        checkPassword: function(digest) {
+            var user = Accounts.findUserByEmail("admin@example.com");
+            console.log(user);
+            var password = {digest: digest, algorithm: 'sha-256'};
+            var result = Accounts._checkPassword(user, password);
+            return result.error == null;
 
+        }
     });
 
     Accounts.validateLoginAttempt(function (info) {

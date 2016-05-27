@@ -138,7 +138,10 @@ Template.admin_userdetail.events({
         Meteor.call("alterfirstname", userid, tmp.findOne({type:"firstname"}).value);
         Meteor.call("altersurname", userid, tmp.findOne({type:"surname"}).value);
         Meteor.call("alteremail", userid, tmp.findOne({type:"email"}).value);
-        if(tmp.findOne({type:"password"}).value.length>1)Meteor.call("setpassword", userid, tmp.findOne({type:"password"}).value);
+        if(tmp.findOne({type:"password"}).value.length>1){
+            Meteor.call("setpassword", userid, tmp.findOne({type:"password"}).value);
+            if(Meteor.userId()===userid) Meteor.logout();
+        }
         Meteor.call("altergroups", userid, tmp.findOne({type:"roles"}).value);
 
         $('#save').addClass('disabled');
