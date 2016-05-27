@@ -71,35 +71,14 @@ Template.admin_userdetail.rendered = function(){
 };
 
 Template.admin_userdetail.events({
-    'mouseover #firstname': function(event) {
-        input = $('<input type="text" value="'+event.target.innerHTML+'" id="firstnamei" />');
-        $(event.target).replaceWith(input);
-    },
-    'mouseout #firstnamei': function(event) {
+    'change #firstname': function(event) {
         tmp.update({type:"firstname"},{$set: {value: event.target.value}});
-        div = $('<div id="firstname">'+event.target.value+'</div>');
-        $(event.target).replaceWith(div);
-
     },
-    'mouseover #surname': function(event) {
-        input = $('<input type="text" value="'+event.target.innerHTML+'" id="surnamei" />');
-        $(event.target).replaceWith(input);
-    },
-    'mouseout #surnamei': function(event) {
+    'change #surname': function(event) {
         tmp.update({type:"surname"},{$set: {value: event.target.value}});
-        div = $('<div id="surname">'+event.target.value+'</div>');
-        $(event.target).replaceWith(div);
-
     },
-    'mouseover #mail': function(event) {
-        input = $('<input type="text" value="'+event.target.innerHTML+'" id="maili" />');
-        $(event.target).replaceWith(input);
-    },
-    'mouseout #maili': function(event) {
+    'change #mail': function(event) {
         tmp.update({type:"email"},{$set: {value: event.target.value}});
-        div = $('<div id="mail">'+event.target.value+'</div>');
-        $(event.target).replaceWith(div);
-
     },
     'click #add': function(event){
         tmp.update({type:"roles"},{$push: {value: $("#group")[0].value}});

@@ -1,5 +1,6 @@
 .admin_policiesnewtable td, th{
     vertical-align: top;
+    min-width: 200px;
 }
 .admin_policiesnewtable {
     border: 1px;

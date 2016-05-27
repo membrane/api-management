@@ -13,9 +13,7 @@ Template.admin_policiesnew.created= function(){
     });
     tmp.insert({type:"unauthenticated", value: false});
 };
-Template.admin_policiesnew.rendered = function(){
 
-};
 Template.admin_policiesnew.helpers({
     service: function(){
         return tmp.find({type:"service"});
@@ -31,10 +29,18 @@ Template.admin_policiesnew.helpers({
     },
     unauthenticated: function(){
         return tmp.findOne({type:"unauthenticated"}).value;
+    },
+    markdownhint: function(){
+        if(getCookie("markdownhint"))
+            return false;
+        else return true;
     }
 });
 
 Template.admin_policiesnew.events({
+    'click .close': function(){
+        setCookie("markdownhint", true, 20000);
+    },
     'click #gadd': function(event) {
         tmp.update({name:event.target.parentNode.parentNode.childNodes[0].childNodes[0].nodeValue},{$set:{type:"group"}});
     },

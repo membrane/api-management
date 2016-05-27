@@ -10,13 +10,13 @@
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="float: left;">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                &emsp;<strong>Info!</strong> Users can subscribe to policies themselfs using the developer portal. Here the admin can create Subscriptions for the users.
+                &emsp;<strong>Info!</strong> Users can subscribe to policies themselfs using the developer portal. Here the admin can create subscriptions for the users.
             </div>
             <br>
             <br>
             <table>
             <tbody><tr>
-                <td>User:</td>
+                <th>User:</th>
                 <td>
                     <select id="user">
                     {{#each user}}
@@ -26,7 +26,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Policy:</td>
+                <th>Policy:</th>
                 <td>
                     <select id="policies">
                         {{#each policy}}
@@ -36,7 +36,7 @@
                 </td>
             </tr>
             <tr>
-                <td>Key:</td>
+                <th>Key:</th>
                 <td><input type="text" value="{{randomkey}}" id="key"></td>
             </tr>
             </tbody>

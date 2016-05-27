@@ -18,11 +18,21 @@
                         <td><input type="text" placeholder="name" id="name" value="{{name}}" class="form-control"></td>
                     </tr>
                     <tr>
-                        <th>Description</th>
-                        <td><textarea placeholder="description" id="description" class="form-control">{{description}}</textarea></td>
+                        <th>
+                            Description
+                        </th>
+                        <td>
+                            {{#if markdownhint}}
+                                <div class="alert alert-info alert-dismissible">
+                                    You can use <a href="https://en.wikipedia.org/wiki/Markdown" style="text-decoration: underline;">Markdown</a>  in the description.
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                </div>
+                            {{/if}}
+                            <textarea placeholder="description" id="description" class="form-control">{{description}}</textarea>
+                        </td>
                     </tr>
                     <tr>
-                        <th>Services
+                        <th>Services <br>
                             {{#if aviableservice}}
                                 <a href="#" class="btn btn-primary" id="addservices">Add services</a>
                             {{/if}}

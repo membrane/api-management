@@ -52,6 +52,7 @@ Template.admin_policiesdetail.rendered=function(){
 
 
 Template.admin_policiesdetail.helpers({
+
     service: function(){
         return tmp.find({type:"service"}).fetch();
     },
@@ -94,11 +95,19 @@ Template.admin_policiesdetail.helpers({
         if(tmp.findOne({type:"unauthenticated"})!=undefined)
             return tmp.findOne({type:"unauthenticated"}).value;
         else return false;
+    },
+    markdownhint: function(){
+        if(getCookie("markdownhint"))
+            return false;
+        else return true;
     }
 
 });
 
 Template.admin_policiesdetail.events({
+    'click .close': function(){
+        setCookie("markdownhint", true, 20000);
+    },
     'click .gmin': function(event) {
         if(event.target.value!=undefined) tmp.update({_id:event.target.value},{$set:{type:"agroup"}});
         else tmp.update({_id:event.target.parentElement.value},{$set:{type:"agroup"}});

@@ -3,45 +3,47 @@
         {{#if isInRole 'admin'}}
             {{>adminnavbar}}
             <div class="container">
-                <div class="alert alert-info">
-                    Hover over the fields to change them.
-                </div>
                 <table class="table table-striped" style="width: 100%;">
                     <tbody>
                     <tr>
-                        <th style="width: 50%;">
+                        <th style="min-width: 200px;">
                             Firstname
                         </th>
                         <td>
-                            <div id="firstname">{{firstname}}</div>
+                            <input type="text" id="firstname" value="{{firstname}}" style="width: 100%">
                         </td>
                     </tr>
                     <tr>
-                        <th style="width: 50%;">
+                        <th>
                             Surname
                         </th>
                         <td>
-                            <div id="surname">{{surname}}</div>
+                            <input type="text" id="surname" value="{{surname}}" style="width: 100%">
                         </td>
 
                     </tr>
                     <tr>
-                        <th style="width: 50%;">
+                        <th>
                             Email
                         </th>
                         <td>
-                            <div id="mail">{{email}}</div>
-                        </td>,
+                            <input type="text" id="mail" value="{{email}}" style="width: 100%">
+                        </td>
                     </tr>
                     <tr>
-                        <td style="width: 50%;">
-                            Roles
-                        </td>
+                        <th>
+                           Groups
+                            <br>
+                            {{#if groups}}
+                                <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
+                            {{/if}}
+                        </th>
                         <td>
+
                             <table>
                                 {{#each roles}}
                                     <tr>
-                                        <td>
+                                        <td width="250px">
                                             {{this}}
                                         </td>
                                         <td>
@@ -54,9 +56,6 @@
                                     </tr>
                                 {{/each}}
                             </table>
-                                {{#if groups}}
-                                    <a href="#" class="btn btn-primary" id="addgroups">Add groups</a>
-                                {{/if}}
                                 <div class="modal fade" id="groupsmodal">
                                     <div class="modal-dialog modal-sm">
                                         <div class="modal-content">
@@ -91,7 +90,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <th style="width: 50%;">Status</th>
+                        <th>Status</th>
                         <td>
                             <select id="options">
                                 <option value="approved" class="opt">approved</option>
@@ -102,11 +101,11 @@
                         </td>
                     </tr>
                     <tr>
-                        <th style="width: 50%;">
+                        <th>
                             Password
                         </th>
                         <td>
-                            <input type="password" id="pw" placeholder="password" value="">
+                            <input type="password" id="pw" placeholder="password" value="" style="width: 100%">
                         </td>
                     </tr>
                     </tbody>
