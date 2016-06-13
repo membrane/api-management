@@ -1,0 +1,48 @@
+<template name="admin_dashboard">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <h2>Dashboard</h2>
+                <br>
+                <table>
+                    <tr>
+                        <td style="width: 50%; height: 50%">
+                            <div class="alert alert-info">
+                                {{#if users}}
+                                    There are unapproved users, you should approve them.
+
+                                    <table>
+                                        <tr><th>user</th><th>email</th><th>status</th></tr>
+                                        {{#each users}}
+                                            <tr><td>{{this.profile.firstname}} {{this.profile.surname}}</td><td>{{this.emails.[0].address}}</td><td><a href="/user/{{this._id}}">unapproved</a></td></tr>
+                                        {{/each}}
+                                    </table>
+                                {{else}}
+                                    There are no unapproved users.
+                                {{/if}}
+                            </div>
+                        </td>
+                        <td style="width: 50%; height: 50%">
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 50%; height: 50%">
+
+                        </td>
+                        <td style="width: 50%; height: 50%">
+
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>
