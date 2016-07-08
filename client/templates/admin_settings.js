@@ -23,6 +23,9 @@ Template.admin_settings.helpers({
     },
     ca : function(){
         return settings.findOne({type:"ca"});
+    },
+    hostname : function(){
+        return settings.findOne({type:"hostname"});
     }
 });
 Template.admin_settings.events({
@@ -37,6 +40,7 @@ Template.admin_settings.events({
         Meteor.call("chsettings", "key",$("#key")[0].value );
         Meteor.call("chsettings", "cert",$("#cert")[0].value );
         Meteor.call("chsettings", "ca",$("#ca")[0].value );
+        Meteor.call("chsettings", "hostname",$("#hostname")[0].value );
         //settings.update({_id: event.target.id}, {$set: {value:$("#etcdurl")[0].value}});
         $("#succesmodal").modal("show");
         setTimeout(function(){

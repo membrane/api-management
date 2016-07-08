@@ -20,12 +20,11 @@
                 {{#each services}}
                     <tr>
                         <td>
-                            <a href="{{this.url}}">{{this.name}}</a>
+                            <a href="/service/{{this._id}}">{{this.name}}</a>
                         </td>
                         <td>
                             {{this.membrane}}
                         </td>
-
                     </tr>
                 {{/each}}
                 </tbody>

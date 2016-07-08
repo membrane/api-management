@@ -2,6 +2,8 @@ const YAML = Meteor.npmRequire("js-yaml");
 const HTTPS = Npm.require("https");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var basicAuth;
+var hostname;
+
 
 function isInArray(value, array) {
     return array.indexOf(value) > -1;
@@ -214,7 +216,7 @@ function readservicesonchange() {
         var uri = buildurlR("/admin/rest/proxies?offset=0&max=1000", host + ":" + port);
         var re;
         if (settingsNOTundefinedANDNOTempty("membraneusername"))
-            re = call("HTTP", "GET", uri(""), {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
+            re = call("HTTP", "GET", uri("http://"), {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
         else
             re = call("HTTP", "GET", uri("http://"), {});
 
@@ -273,7 +275,12 @@ function readservicesonchange() {
 }
 
 
+
+
+
+
     Meteor.startup(function () {
+
         if (settings.findOne({type: "exportusername"}) != undefined && settings.findOne({type: "exportpassword"}) != undefined) basicAuth = new HttpBasicAuth(settings.findOne({type: "exportusername"}).value, settings.findOne({type: "exportpassword"}).value);
         if (settingsNOTundefinedANDNOTempty("exportusername"))basicAuth.protect(["/export"]);
 
@@ -308,6 +315,163 @@ function readservicesonchange() {
     });
 
     Meteor.methods({
+        elasticsearchROTpoller: function(service, interval){
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/exchanges/_search", {data:{
+                "query": {
+                    "query_string": {
+                        "query": service,
+                        "fields": [hostname+".service"]
+                    }
+                },
+                "aggs" : {
+                    "requests_over_time" : {
+                        "date_histogram" : {
+                            "field" : hostname+".excTime",
+                            "interval" : interval,
+                            "min_doc_count": 0
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:"ROT",service: service, interval: interval})==undefined) dat.insert({_id:Random.id(), type:"ROT", service: service, interval: interval, value: data.aggregations.requests_over_time.buckets}) ;
+            else dat.update({_id:dat.findOne({type:"ROT",service: service, interval: interval})._id}, {$set:{value: data.aggregations.requests_over_time.buckets}});
+            return true;
+        },
+        elasticsearchTDpoller: function(service, interval){
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/statistics/_search", {data:{
+                "query": {
+                    "query_string": {
+                        "query": service,
+                        "fields": [hostname+".service"]
+                    }
+                },
+                "aggs" : {
+                    "time_distribution" : {
+                        "histogram" : {
+                            "field" : hostname+".time",
+                            "interval": 1
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:"TD",service: service, interval: interval})==undefined) dat.insert({_id:Random.id(), type:"TD", service: service, interval: interval, value: data.aggregations.time_distribution.buckets});
+            else dat.update({_id:dat.findOne({type:"TD",service: service, interval: interval})._id}, {$set:{value: data.aggregations.time_distribution.buckets}});
+            return true;
+        },
+        elasticsearchROTpollerW: function(interval){
+            var service = "_undefined";
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/exchanges/_search", {data:{
+                "query": {
+                    "match_all": {}
+                },
+                "aggs" : {
+                    "requests_over_time" : {
+                        "date_histogram" : {
+                            "field" : hostname+".excTime",
+                            "interval" : interval,
+                            "min_doc_count": 0
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:"ROT",service: service, interval: interval})==undefined) dat.insert({_id:Random.id(), type:"ROT", service: service, interval: interval, value: data.aggregations.requests_over_time.buckets}) ;
+            else dat.update({_id:dat.findOne({type:"ROT",service: service, interval: interval})._id}, {$set:{value: data.aggregations.requests_over_time.buckets}});
+            return true;
+        },
+        elasticsearchTDpollerW: function( interval){
+            var service = "_undefined";
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/statistics/_search", {data:{
+                "query": {
+                    "match_all": {}
+                },
+                "aggs" : {
+                    "time_distribution" : {
+                        "histogram" : {
+                            "field" : hostname+".time",
+                            "interval": 1
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:"TD",service: service, interval: interval})==undefined) dat.insert({_id:Random.id(), type:"TD", service: service, interval: interval, value: data.aggregations.time_distribution.buckets});
+            else dat.update({_id:dat.findOne({type:"TD",service: service, interval: interval})._id}, {$set:{value: data.aggregations.time_distribution.buckets}});
+            return true;
+        },
+        elasticsearchMESTApollerW: function( field){
+            var service = "_undefined";
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/statistics/_search", {data:{
+                    "query": {
+                        "match_all": {}
+                    },
+                    "aggs" : {
+                        "field" : {
+                            "terms" : {
+                                "field" : hostname+"."+field
+                            }
+                        }
+                    }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:field,service: service})==undefined) dat.insert({_id:Random.id(), type:field, service: service,  value: data.aggregations.field.buckets});
+            else dat.update({_id:dat.findOne({type:field,service: service})._id}, {$set:{value: data.aggregations.field.buckets}});
+            return true;
+        }
+        ,
+        elasticsearchMESTApoller: function(service, field){
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/statistics/_search", {data:{
+                "query": {
+                    "query_string": {
+                        "query": service,
+                        "fields": [hostname+".service"]
+                    }
+                },
+                "aggs" : {
+                    "field" : {
+                        "terms" : {
+                            "field" : hostname+"."+field
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:field,service: service})==undefined) dat.insert({_id:Random.id(), type:field, service: service,  value: data.aggregations.field.buckets});
+            else dat.update({_id:dat.findOne({type:field,service: service})._id}, {$set:{value: data.aggregations.field.buckets}});
+            return true;
+        }
+        ,
+
+        elasticsearchMEEXCpoller: function(service, field){
+            hostname= settings.findOne({type: "hostname"}).value;
+            var data= call("HTTP", "POST", "http://localhost:9200/api/exchanges/_search", {data:{
+                "query": {
+                    "query_string": {
+                        "query": service,
+                        "fields": [hostname+".service"]
+                    }
+                },
+                "aggs" : {
+                    "field" : {
+                        "terms" : {
+                            "field" : hostname+"."+field
+                        }
+                    }
+                }
+            }});
+            data = JSON.parse(data.content);
+            if(dat.findOne({type:field,service: service})==undefined) dat.insert({_id:Random.id(), type:field, service: service, value: data.aggregations.field.buckets});
+            else dat.update({_id:dat.findOne({type:field,service: service})._id}, {$set:{value: data.aggregations.field.buckets}});
+            return true;
+        },
         chsettings: function (type, value) {
             if (Roles.userIsInRole(this.userId, ['admin'])) {
                 if (settings.findOne({type: type}) != undefined) {
@@ -399,7 +563,7 @@ function readservicesonchange() {
 
                 try {
                     var url= buildurlR(port + "/admin/rest/proxies?offset=0&max=1000",host + ":")
-                    if (settingsNOTundefinedANDNOTempty("membraneusername")) var re = call("HTTP", "GET",  url("") , {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
+                    if (settingsNOTundefinedANDNOTempty("membraneusername")) var re = call("HTTP", "GET",  url("http://") , {auth: settings.findOne({type: "membraneusername"}).value + ":" + settings.findOne({type: "membranepassword"}).value});
                     else  var re = call("HTTP", "GET", url("http://"), {});
 
                     re = JSON.parse(re.content);
@@ -865,6 +1029,25 @@ function readservicesonchange() {
                 if(entry.unauthenticated) id.push(entry._id);
             });
             return policies.find({_id: {$in: id}});
+        }
+    });
+
+
+    dat.allow({
+        update: function (userId, doc, fields, modifier) {
+            return (Roles.userIsInRole(userId, ['admin']));
+        },
+        insert: function (userId, doc, fields, modifier) {
+            return (Roles.userIsInRole(userId, ['admin']));
+        },
+        remove: function (userId, doc, fields, modifier) {
+            return (Roles.userIsInRole(userId, ['admin']));
+        }
+    });
+    Meteor.publish('dat', function (name) {
+        if (Roles.userIsInRole(this.userId, ['admin']))return dat.find();
+        else {
+            return services.find({visible: this.userId});
         }
     });
 

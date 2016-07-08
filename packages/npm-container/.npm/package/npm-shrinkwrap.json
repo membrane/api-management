@@ -16,9 +16,9 @@
       "from": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.5.2.tgz",
       "dependencies": {
         "argparse": {
-          "version": "1.0.6",
-          "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.6.tgz",
-          "from": "https://registry.npmjs.org/argparse/-/argparse-1.0.6.tgz",
+          "version": "1.0.7",
+          "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
+          "from": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
           "dependencies": {
             "sprintf-js": {
               "version": "1.0.3",

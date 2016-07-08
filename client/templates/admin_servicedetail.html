@@ -1,0 +1,47 @@
+<template name="admin_servicedetail">
+    {{#if currentUser}}
+        {{#if isInRole 'admin'}}
+            {{>adminnavbar}}
+            <div class="container">
+                <div>
+                    <a href="{{service.url}}"><h2>{{service.name}}</h2></a>
+                </div>
+                <div>
+                    <h3>Requests over Time</h3>
+                    <br />
+                    <select class="interval">
+                        <option>minute</option>
+                        <option selected>hour</option>
+                        <option>day</option>
+                        <option>week</option>
+                        <option>month</option>
+                        <option>year</option>
+                    </select>
+                    <input type="number" class="count" value="24"/>
+                    <button class=" btn btn-primary calc">Draw</button>
+                </div>
+                <svg class="ROTchart"></svg>
+                <h3>Distribution of Requests by Response Time</h3>
+                <svg class="TDchart"></svg>
+                <div style="width: 100%; text-align: center; margin: auto;">
+                    <select class="query">
+                        <option>uri</option>
+                        <option>method</option>
+                        <option>code</option>
+                        <option selected>excStatus</option>
+                        <option>excApiKey</option>
+                    </select>
+                    <button class=" btn btn-primary calc2">Draw</button>
+                    <br>
+                    <svg class="QUchart"></svg>
+                </div>
+
+            </div>
+        {{else}}
+            {{>usernavbar}}
+            {{>userrestricted}}
+        {{/if}}
+    {{else}}
+        {{>usernotloggedin}}
+    {{/if}}
+</template>

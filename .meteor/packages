@@ -36,3 +36,4 @@ twbs:bootstrap
 standard-minifier-css
 standard-minifier-js
 markdown
+d3js:d3

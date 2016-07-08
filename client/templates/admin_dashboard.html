@@ -7,7 +7,7 @@
                 <br>
                 <table>
                     <tr>
-                        <td style="width: 50%; height: 50%">
+                        <td style="width: 100%;">
                             <div class="alert alert-info">
                                 {{#if users}}
                                     There are unapproved users, you should approve them.
@@ -23,16 +23,48 @@
                                 {{/if}}
                             </div>
                         </td>
-                        <td style="width: 50%; height: 50%">
 
+                    </tr>
+                    <tr>
+                        <td style="width: 100%;">
+                            <h3>Requests over Time</h3>
+                            <div>
+                                <select class="interval">
+                                    <option>minute</option>
+                                    <option selected>hour</option>
+                                    <option>day</option>
+                                    <option>week</option>
+                                    <option>month</option>
+                                    <option>year</option>
+                                </select>
+                                <input type="number" class="count" value="24"/>
+                                <button class=" btn btn-primary calc">Draw</button>
+                            </div>
+                            <svg class="ROTchart"></svg>
                         </td>
                     </tr>
                     <tr>
-                        <td style="width: 50%; height: 50%">
+                        <td style="width: 100%;">
+                            <h3>Distribution of Requests by Response Time</h3>
+                            <svg class="TDchart"></svg>
 
                         </td>
-                        <td style="width: 50%; height: 50%">
 
+                    </tr>
+                    <tr>
+                        <td style="width: 100%; text-align: center; margin: auto;">
+                            <div>
+                                <select class="query">
+                                    <option>uri</option>
+                                    <option>method</option>
+                                    <option>code</option>
+                                    <option>excStatus</option>
+                                    <option selected>excApiKey</option>
+                                </select>
+                                <button class=" btn btn-primary calc2">Draw</button>
+                            </div>
+                            <br />
+                            <svg class="QUchart"></svg>
                         </td>
                     </tr>
                 </table>

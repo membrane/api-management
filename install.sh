@@ -25,8 +25,10 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	command -v tar >/dev/null 2>&1 || { echo >&2 "tar is required but it's not installed.  Aborting."; exit 1; }
 	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
 	unzip -q membrane-service-proxy-4.2.1.zip
+	curl -L https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/zip/elasticsearch/2.3.4/elasticsearch-2.3.4.zip -o elasticsearch-2.3.4.zip
+	unzip -q elasticsearch-2.3.4.zip
 	rm membrane-service-proxy-4.2.1.zip
-	
+	rm elasticsearch-2.3.4.zip
 	command -v meteor >/dev/null 2>&1 || { curl https://install.meteor.com/ | sh; }
 	if [ "$UNAME" != "Linux" -a  "$UNAME" != "Darwin" ] ; then
 		exit 1
@@ -64,6 +66,8 @@ startserviceproxy		start membrane service proxy
 stopserviceproxy		stop membrane service proxy
 startapimanagement		start api-mangement
 stopapimanagement		stop api-mangement
+startelasticsearch		start elasticsearch
+stopelasticsearch		stop elasticsearch
 "
 }
 startetcd(){
@@ -195,6 +199,48 @@ api-management is not started
 ================================"
 	fi
 }
+
+startelasticsearch(){
+	if [ -e $DIR/../tmp/elasticsearch.tmp ]
+		then
+			echo "================================
+elasticsearch already started
+================================"
+		else
+				$DIR/../elasticsearch-2.3.4/bin/elasticsearch > $DIR/../tmp/elasticsearch.log & echo "$!" > $DIR/../tmp/elasticsearch.tmp;
+				disown;
+				for ((z=0;z<300;z++))
+				do
+					if grep -q "started" $DIR/../tmp/elasticsearch.log; 
+					then 
+						echo "elasticsearch startup finished."
+						break; 
+					fi;
+					sleep 1
+					if [ "$z" -ge "298" ] ; 
+					then 
+						echo "ERROR: elasticsearch startup aborted. View membrane-api-mgr/tmp/elasticsearch.log"
+						exit 1
+						break; 
+					fi;
+				done
+	fi
+}
+stopelasticsearch(){
+	if [ -e $DIR/../tmp/elasticsearch.tmp ]
+		then
+		echo "================================
+shutting down elasticsearch
+================================"
+			pkill -P $(cat $DIR/../tmp/elasticsearch.tmp)
+			kill $(cat $DIR/../tmp/elasticsearch.tmp)
+			rm $DIR/../tmp/elasticsearch.tmp	
+		else
+				echo "================================
+elasticsearch is not started
+================================"
+	fi
+}
 if [ "$#" -ge "1" ] 
 	then
 		case "$1" in
@@ -203,6 +249,8 @@ if [ "$#" -ge "1" ]
 First startup might take a while because the meteor application needs to be initalised
 ======================================================================================"
 					startetcd;
+					echo "please wait ...";
+					startelasticsearch;
 					echo "please wait ...";
 					startserviceproxy;
 					echo "please wait ...";
@@ -221,10 +269,15 @@ First startup might take a while because the meteor application needs to be init
 					startapimanagement
 					
 				;;
+			startelasticsearch)
+					startelasticsearch
+					
+				;;
 			stop) 
 					
 				stopapimanagement
 				stopserviceproxy
+				stopelasticsearch
 				stopetcd
 				pkill -P $$
 			    ;;
@@ -233,6 +286,8 @@ First startup might take a while because the meteor application needs to be init
 			stopserviceproxy) stopserviceproxy	
 			    ;;
 			stopapimanagement) stopapimanagement	
+			    ;;
+			stopelasticsearch) stopelasticsearch	
 			    ;;
 			*) help
 			    ;;
@@ -244,7 +299,8 @@ First startup might take a while because the meteor application needs to be init
 fi
 
 exit 0
- ' >./bin/api-management.sh
+
+' >./bin/api-management.sh
 	chmod +x ./bin/api-management.sh
 	echo "===============================================================================
 start api-management by running 
