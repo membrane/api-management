@@ -1,4 +1,4 @@
-# api-management
+# Membrane API Management
 API Management solution based on Membrane Service Proxy providing a developer portal, API keys and an admin console.
 
 ###Installation:
