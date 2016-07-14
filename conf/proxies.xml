@@ -15,6 +15,7 @@
 				<apiManagement>
 					<amRateLimiter/>
 					<amQuota />
+					<amStatisticsCollector host="http://localhost:9200/"/>
 				</apiManagement>
 				<reverseProxying />
 				<userFeature />

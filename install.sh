@@ -23,11 +23,11 @@ This script installs API-Management, etcd and Membrane Service Proxy.
 	command -v curl >/dev/null 2>&1 || { echo >&2 "curl is required but it's not installed.  Aborting."; exit 1; }
 	command -v unzip >/dev/null 2>&1 || { echo >&2 "unzip is required but it's not installed.  Aborting."; exit 1; }
 	command -v tar >/dev/null 2>&1 || { echo >&2 "tar is required but it's not installed.  Aborting."; exit 1; }
-	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.1/membrane-service-proxy-4.2.1.zip -o membrane-service-proxy-4.2.1.zip
-	unzip -q membrane-service-proxy-4.2.1.zip
+	curl -L https://github.com/membrane/service-proxy/releases/download/v4.2.2/membrane-service-proxy-4.2.2.zip -o membrane-service-proxy-4.2.2.zip
+	unzip -q membrane-service-proxy-4.2.2.zip
 	curl -L https://download.elastic.co/elasticsearch/release/org/elasticsearch/distribution/zip/elasticsearch/2.3.4/elasticsearch-2.3.4.zip -o elasticsearch-2.3.4.zip
 	unzip -q elasticsearch-2.3.4.zip
-	rm membrane-service-proxy-4.2.1.zip
+	rm membrane-service-proxy-4.2.2.zip
 	rm elasticsearch-2.3.4.zip
 	command -v meteor >/dev/null 2>&1 || { curl https://install.meteor.com/ | sh; }
 	if [ "$UNAME" != "Linux" -a  "$UNAME" != "Darwin" ] ; then
@@ -118,7 +118,7 @@ startserviceproxy(){
 service-proxy already started
 ================================"
 		else
-			$DIR/../membrane-service-proxy-4.2.1/service-proxy.sh -c ../conf/proxies.xml > $DIR/../tmp/service-proxy.log & echo "$!" > $DIR/../tmp/service-proxy.tmp;
+			$DIR/../membrane-service-proxy-4.2.2/service-proxy.sh -c ../conf/proxies.xml > $DIR/../tmp/service-proxy.log & echo "$!" > $DIR/../tmp/service-proxy.tmp;
 			disown;
 			for ((z=0;z<300;z++))
 			do
