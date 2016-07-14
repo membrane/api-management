@@ -1,5 +1,6 @@
 const YAML = Meteor.npmRequire("js-yaml");
 const HTTPS = Npm.require("https");
+OS = Npm.require("os");
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 var basicAuth;
 var hostname;

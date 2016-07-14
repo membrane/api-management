@@ -1,3 +1,4 @@
+
 fixtures = function(){
     if(Meteor.users.findOne()==undefined) {
         var id = Accounts.createUser({
@@ -19,5 +20,8 @@ fixtures = function(){
     }
     if(settings.findOne({type: "etcdurl"}) == undefined){
         settings.insert({_id: Random.id(), type: "etcdurl", value: "http://localhost:2379"});
+    }
+    if(settings.findOne({type: "hostname"}) == undefined){
+        settings.insert({_id: Random.id(), type: "hostname", value: OS.hostname()});
     }
 };

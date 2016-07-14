@@ -1,43 +1,44 @@
 {
   "dependencies": {
+    "argparse": {
+      "version": "1.0.7",
+      "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
+      "from": "argparse@>=1.0.2 <2.0.0"
+    },
     "bootstrap": {
       "version": "3.3.6",
       "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.6.tgz",
-      "from": "https://registry.npmjs.org/bootstrap/-/bootstrap-3.3.6.tgz"
+      "from": "bootstrap@3.3.6"
+    },
+    "esprima": {
+      "version": "2.7.2",
+      "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz",
+      "from": "esprima@>=2.6.0 <3.0.0"
     },
     "https": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/https/-/https-1.0.0.tgz",
-      "from": "https://registry.npmjs.org/https/-/https-1.0.0.tgz"
+      "from": "https@1.0.0"
     },
     "js-yaml": {
       "version": "3.5.2",
       "resolved": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.5.2.tgz",
-      "from": "https://registry.npmjs.org/js-yaml/-/js-yaml-3.5.2.tgz",
-      "dependencies": {
-        "argparse": {
-          "version": "1.0.7",
-          "resolved": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
-          "from": "https://registry.npmjs.org/argparse/-/argparse-1.0.7.tgz",
-          "dependencies": {
-            "sprintf-js": {
-              "version": "1.0.3",
-              "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz",
-              "from": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz"
-            }
-          }
-        },
-        "esprima": {
-          "version": "2.7.2",
-          "resolved": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz",
-          "from": "https://registry.npmjs.org/esprima/-/esprima-2.7.2.tgz"
-        }
-      }
+      "from": "js-yaml@3.5.2"
     },
     "lodash": {
       "version": "4.0.1",
       "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.0.1.tgz",
-      "from": "https://registry.npmjs.org/lodash/-/lodash-4.0.1.tgz"
+      "from": "lodash@4.0.1"
+    },
+    "os": {
+      "version": "0.1.1",
+      "resolved": "https://registry.npmjs.org/os/-/os-0.1.1.tgz",
+      "from": "os@0.1.1"
+    },
+    "sprintf-js": {
+      "version": "1.0.3",
+      "resolved": "https://registry.npmjs.org/sprintf-js/-/sprintf-js-1.0.3.tgz",
+      "from": "sprintf-js@>=1.0.2 <1.1.0"
     }
   }
 }
