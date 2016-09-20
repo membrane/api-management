@@ -71,13 +71,13 @@ stopelasticsearch		stop elasticsearch
 "
 }
 startetcd(){
-	if [ -e $DIR/../tmp/etcd.tmp ]
+	if [ -e $DIR/../tmp/etcd.pid ]
 		then
 			echo "================================
 etcd already started
 ================================"
 		else
-				$DIR/etcd 2> $DIR/../tmp/etcd.log & echo "$!" > $DIR/../tmp/etcd.tmp;
+				$DIR/etcd 2> $DIR/../tmp/etcd.log & echo "$!" > $DIR/../tmp/etcd.pid;
 				disown;
 				for ((z=0;z<300;z++))
 				do
@@ -97,14 +97,14 @@ etcd already started
 	fi
 }
 stopetcd(){
-	if [ -e $DIR/../tmp/etcd.tmp ]
+	if [ -e $DIR/../tmp/etcd.pid ]
 		then
 		echo "================================
 shutting down etcd
 ================================"
-			pkill -P $(cat $DIR/../tmp/etcd.tmp)
-			kill $(cat $DIR/../tmp/etcd.tmp)
-			rm $DIR/../tmp/etcd.tmp	
+			pkill -P $(cat $DIR/../tmp/etcd.pid)
+			kill $(cat $DIR/../tmp/etcd.pid)
+			rm $DIR/../tmp/etcd.pid	
 		else
 				echo "================================
 etcd is not started
@@ -112,13 +112,13 @@ etcd is not started
 	fi
 }
 startserviceproxy(){
-	if [ -e $DIR/../tmp/service-proxy.tmp ]
+	if [ -e $DIR/../tmp/service-proxy.pid ]
 		then
 			echo "================================
 service-proxy already started
 ================================"
 		else
-			$DIR/../membrane-service-proxy-4.2.2/service-proxy.sh -c ../conf/proxies.xml > $DIR/../tmp/service-proxy.log & echo "$!" > $DIR/../tmp/service-proxy.tmp;
+			$DIR/../membrane-service-proxy-4.2.2/service-proxy.sh -c ../conf/proxies.xml > $DIR/../tmp/service-proxy.log & echo "$!" > $DIR/../tmp/service-proxy.pid;
 			disown;
 			for ((z=0;z<300;z++))
 			do
@@ -138,14 +138,14 @@ service-proxy already started
 	fi
 }
 stopserviceproxy(){
-	if [ -e $DIR/../tmp/service-proxy.tmp ]
+	if [ -e $DIR/../tmp/service-proxy.pid ]
 		then
 		echo "================================
 shutting down service-proxy
 ================================"
-			pkill -P $(cat $DIR/../tmp/service-proxy.tmp)
-			kill $(cat $DIR/../tmp/service-proxy.tmp)
-			rm $DIR/../tmp/service-proxy.tmp
+			pkill -P $(cat $DIR/../tmp/service-proxy.pid)
+			kill $(cat $DIR/../tmp/service-proxy.pid)
+			rm $DIR/../tmp/service-proxy.pid
 		else
 			echo "================================
 service-proxy is not started
@@ -153,13 +153,13 @@ service-proxy is not started
 	fi
 }
 startapimanagement(){
-	if [ -e $DIR/../tmp/api-management.tmp ]
+	if [ -e $DIR/../tmp/api-management.pid ]
 		then
 			echo "================================
 api-management already started
 ================================"
 		else
-			cd $DIR/../api-management ; meteor > $DIR/../tmp/api-management.log & echo "$!" > $DIR/../tmp/api-management.tmp;
+			cd $DIR/../api-management ; meteor > $DIR/../tmp/api-management.log & echo "$!" > $DIR/../tmp/api-management.pid;
 			disown;
 			cd $DIR;
 			for ((z=0;z<300;z++))
@@ -187,13 +187,13 @@ api-management already started
 	
 }
 stopapimanagement(){
-	if [ -e $DIR/../tmp/api-management.tmp ]
+	if [ -e $DIR/../tmp/api-management.pid ]
 		then
 			echo "================================
 shutting down api-management
 ================================"
-			kill $(cat $DIR/../tmp/api-management.tmp)
-			rm $DIR/../tmp/api-management.tmp	
+			kill $(cat $DIR/../tmp/api-management.pid)
+			rm $DIR/../tmp/api-management.pid	
 		else
 			echo "================================
 api-management is not started
@@ -202,13 +202,13 @@ api-management is not started
 }
 
 startelasticsearch(){
-	if [ -e $DIR/../tmp/elasticsearch.tmp ]
+	if [ -e $DIR/../tmp/elasticsearch.pid ]
 		then
 			echo "================================
 elasticsearch already started
 ================================"
 		else
-				$DIR/../elasticsearch-2.3.4/bin/elasticsearch > $DIR/../tmp/elasticsearch.log & echo "$!" > $DIR/../tmp/elasticsearch.tmp;
+				$DIR/../elasticsearch-2.3.4/bin/elasticsearch > $DIR/../tmp/elasticsearch.log & echo "$!" > $DIR/../tmp/elasticsearch.pid;
 				disown;
 				for ((z=0;z<300;z++))
 				do
@@ -228,14 +228,14 @@ elasticsearch already started
 	fi
 }
 stopelasticsearch(){
-	if [ -e $DIR/../tmp/elasticsearch.tmp ]
+	if [ -e $DIR/../tmp/elasticsearch.pid ]
 		then
 		echo "================================
 shutting down elasticsearch
 ================================"
-			pkill -P $(cat $DIR/../tmp/elasticsearch.tmp)
-			kill $(cat $DIR/../tmp/elasticsearch.tmp)
-			rm $DIR/../tmp/elasticsearch.tmp	
+			pkill -P $(cat $DIR/../tmp/elasticsearch.pid)
+			kill $(cat $DIR/../tmp/elasticsearch.pid)
+			rm $DIR/../tmp/elasticsearch.pid	
 		else
 				echo "================================
 elasticsearch is not started
