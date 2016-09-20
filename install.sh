@@ -167,6 +167,7 @@ api-management already started
 				if grep -q "Can" $DIR/../tmp/api-management.log; 
 				then 
 					echo "ERROR: Meteor could not be started. View membrane-api-mgr/tmp/api-management.log";
+					cat /membrane-api-mgr/tmp/api-management.log
 					break; 
 				fi;
 				if grep -q "running" $DIR/../tmp/api-management.log; 
